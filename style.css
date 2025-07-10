@@ -70,7 +70,7 @@ background-color: #333333;
 
 /************************************************************************* Game Props */
 
-#wall {
+#shield {
   position: absolute;
   top: 800px; /* Adjust this height where you want the wall */
   left: 0;
@@ -176,5 +176,14 @@ background-color: #333333;
 @keyframes floatText {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-20px); }
+}
+
+
+#fxCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10;
 }
 

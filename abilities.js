@@ -2,13 +2,17 @@
 
 let rocketDamageAmount = 50000;
 
-function explodeRocket(x, y, radius = 80) {
+function explodeRocket(x, y, radius = 80, fizzSound) {
   const particleCount = 40;  // lots of bits
   const duration = 1500;     // particles last longer
   const distance = Math.random() * radius;
+  const rocketExplosion = document.getElementById('rocketExplosion');
+  window.addReverbToAudio(rocketExplosion, 'audio/ir/2_16L.wav')
 
   createParticles(x, y, particleCount, duration, 'orange');
   damageNearbyEnemies(x, y, radius, rocketDamageAmount);
+  window.stopFizz(fizzSound);
+  window.playRocketExplosion();
 
 
 
@@ -20,6 +24,9 @@ window.fireRocket = function (x, y) {
   if (rocketCount <= 0) return;
   let activeRocket = document.createElement("div");
   gameArea.appendChild(activeRocket);
+
+  
+
 
   rocketCount--;
   updateRocketDisplay();
@@ -40,6 +47,8 @@ window.fireRocket = function (x, y) {
   const startY = gameArea.clientHeight - 40;
   activeRocket.style.left = `${startX}px`;
   activeRocket.style.top = `${startY}px`;
+
+  const fizzSound = window.playFizz();
 
   const dx = x - startX;
   const dy = y - startY;
@@ -86,7 +95,7 @@ window.fireRocket = function (x, y) {
     if (distRemaining > speed) {
       requestAnimationFrame(animate);
     } else {
-      explodeRocket(currentX, currentY, maxRadius);
+      explodeRocket(currentX, currentY, maxRadius, fizzSound);
       activeRocket.remove();
       debugCircle.remove();
     }

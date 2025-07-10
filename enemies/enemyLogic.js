@@ -1,3 +1,6 @@
+let lastReactorDamageTime = 0; // to move to reactor script
+
+
 //********************************************************************************************************************* Spawn Ememies */
 
 
@@ -7,6 +10,7 @@ function spawnEnemy() {
   // Random enemies 
   //let i = Math.floor(Math.random() * level1Enemys.length); <- 
   //let r = level1Enemys[i];
+
 
   // Weighted enemies
 
@@ -70,7 +74,13 @@ function spawnEnemy() {
     const y = rect.top - gameAreaRect.top + enemy.offsetHeight / 2;
 
     if (currentHp <= 0) {
-      // Calculate size for particles
+          const base = document.getElementById('enemyDeathSound');
+          if (base) {
+            const clone = base.cloneNode(); // allows overlapping sounds
+            clone.volume = 0.7 + Math.random() * 0.3; // vary volume
+            clone.playbackRate = 0.9 + Math.random() * 0.3; // vary pitch
+            clone.play();
+          }
       const size = parseInt(enemy.style.width);
       const particleCount = Math.floor(size * 2);
       const duration = size * 30 + 5;
@@ -166,8 +176,8 @@ window.pickWeightedEnemy = pickWeightedEnemy;
 
 function moveEnemies() {
   const areaHeight = gameArea.clientHeight;
-  const wall = document.getElementById('wall');
-  const wallTop = wall.offsetTop;
+  const shield = document.getElementById('shield');
+  const shieldTop = shield.offsetTop;
 
   for (let i = activeEnemies.length - 1; i >= 0; i--) {
     let enemy = activeEnemies[i];
@@ -176,47 +186,109 @@ function moveEnemies() {
     enemy.y += parseFloat(enemy.dataset.speed);
     enemy.style.top = enemy.y + 'px';
 
-    // Check if enemy reached the wall
-    if (enemy.y + enemy.offsetHeight > wallTop) {
-      enemyHitsWall(enemy);
+    // Check if enemy reached the shield
+    if (!window.shieldDown && enemy.y + enemy.offsetHeight > shieldTop) {
+      enemyHitsShield(enemy);
     } else if (enemy.y > areaHeight) {
-      // Enemy fell past game area, remove it
-      gameArea.removeChild(enemy);
-      activeEnemies.splice(i, 1);
+      // Enemy fell past game area, remove it and damage REACTOR
+      enemyHitsReactor(enemy);
+      
+      
+      
     }
   }
 }
 
 
-//********************************************************************************************************************* Enemy Hits Wall */
 
-function enemyHitsWall(enemy) {
-  const wall = document.getElementById('wall');
+function percentage(partialValue, totalValue){     // to move to utilities script
+  return (100*partialValue) / totalValue;
+}
+
+
+//********************************************************************************************************************* Enemy Hits Reactor */
+
+function enemyHitsReactor(enemy) {
+
   const weight = parseInt(enemy.dataset.weight, 10) || 1;
   const damage = Math.round(10 / weight);  // Higher weight → less damage
 
-  console.log('Enemy weight:', weight);
-  console.log('Damage dealt:', damage);
 
-  window.playerHealth -= damage;
-  console.log('Player health now:', window.playerHealth);
-
-  const healthDisplay = document.getElementById('healthDisplay');
-  if (healthDisplay) {
-    healthDisplay.textContent = `Health: ${window.playerHealth}`;
+  window.reactorHealth -= damage;
+  lastReactorDamageTime = Date.now();
+  
+  const reactorDisplay = document.getElementById('reactorDisplay');
+  if (reactorDisplay) {
+    reactorDisplay.textContent = `Reactor Health: ${window.reactorHealth}`;
   }
 
   gameArea.removeChild(enemy);
   const index = activeEnemies.indexOf(enemy);
   if (index > -1) activeEnemies.splice(index, 1);
 
-  wall.style.backgroundColor = 'red';
-  setTimeout(() => wall.style.backgroundColor = '#654321', 50);
+  shield.style.backgroundColor = 'red';
+  setTimeout(() => shield.style.backgroundColor = '#654321', 50);
 
   screenShake();
 
-  if (window.playerHealth <= 0) {
-    alert("Game Over! The wall has been breached!");
+  if (window.reactorHealth <= 0) {
+    window.reactorHealth = 0;
+    window.gameOver = true;
+  }
+}
+
+//********************************************************************************************************************* Enemy Hits Shield */
+
+function enemyHitsShield(enemy) {
+  const shield = document.getElementById('shield');
+  const weight = parseInt(enemy.dataset.weight, 10) || 1;
+  const damage = Math.round(10 / weight);  // Higher weight → less damage
+
+  // Calculate enemy position relative to shield canvas
+  const gameAreaRect = gameArea.getBoundingClientRect();
+  const enemyRect = enemy.getBoundingClientRect();
+
+  const impactX = enemyRect.left + enemyRect.width / 2 - gameAreaRect.left;
+  const impactY = enemyRect.top + enemyRect.height / 2 - gameAreaRect.top;
+
+
+  window.shieldHealth -= damage;
+  
+  const shieldDisplay = document.getElementById('shieldDisplay');
+  if (shieldDisplay) {
+    shieldDisplay.textContent = `Shield: ${window.shieldHealth}`;
+  }
+
+  gameArea.removeChild(enemy);
+  const index = activeEnemies.indexOf(enemy);
+  if (index > -1) activeEnemies.splice(index, 1);
+
+  shield.style.backgroundColor = 'red';
+  setTimeout(() => shield.style.backgroundColor = '#654321', 50);
+
+  screenShake();
+  // Create particles burst
+  const baseSpeed = 300; // px/s
+
+  for (let i = 0; i < 30; i++) {
+    const spread = 0.6; // how wide sideways they spread
+
+    window.fxParticles.push({
+      x: impactX,
+      y: impactY,
+      vx: (Math.random() * 2 - 1) * spread * baseSpeed,  // sideways velocity +/- 
+      vy: -(Math.random() * (baseSpeed * 0.5) + (baseSpeed * 0.5)), // mostly downward velocity
+      radius: Math.random() * 5 + 2,
+      life: 0.6,
+      maxLife: 0.6
+    });
+  }
+
+
+
+  if (window.shieldHealth <= 0) {
+    window.shieldHealth = 0;
+    window.shieldDown = true;
   }
 }
 

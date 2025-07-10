@@ -16,20 +16,28 @@
 </head>
 <body>
 
-  <h1 style="text-align: center;">REACTOR</h1>
-  <div id="healthDisplay" style="position: fixed; top: 10px; left: 10px; font-size: 20px; color: white;">
-  Health: 5
-</div>
+  <audio id="rocketExplosion" src="audio/impacts/rocketImpact.mp3" preload="auto"></audio>
+  <audio id="ambientMusic" src="audio/Music/mesmerizingGalaxyLoop.mp3" preload="auto" loop></audio>
+  <audio id="enemyDeathSound" src="audio/impacts/enemyADie.mp3" preload="auto"></audio>
 
+
+
+
+  <h1 style="text-align: center;">REACTOR</h1>
+  <div id="shieldDisplay" style="position: fixed; top: 10px; left: 10px; font-size: 20px; color: white;">Shield: 5</div>
+  <div id="reactorDisplay" style="position: fixed; top: 10px; left: 100px; font-size: 20px; color: white;">Reactor Health: 300</div>
 
   <div id="killCounter">Enemies Killed: 0</div>
 
 
 
+ 
 
   <div id="gameArea">
     <button id="startGameBtn">Start Game</button>
-    <div id="wall"></div>
+    <div id="shield"></div>
+    <canvas id="fxCanvas"></canvas>
+    
 
 
     <div id="hotbar">
@@ -53,6 +61,7 @@
     <script src="enemies/enemyArrays.js"></script>
     <script src="enemies/enemyLogic.js"></script>
     <script src="abilities.js"></script>
+    <script src="sfx.js"></script>
     <script src="loot.js"></script>
 
     <script src="logic.js"></script>
