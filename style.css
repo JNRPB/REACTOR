@@ -1,0 +1,180 @@
+    body {
+background-color: #333333;
+    }
+    
+    
+    
+    
+    
+    #gameArea {
+        width: 1200px;
+        height: 900px;
+        background-color: #2b2b2b;
+        border: 2px solid #888787;
+        position: relative;
+        overflow: hidden;
+        margin: 20px auto;
+        display: flex;
+        justify-content: center;  /* center horizontally */
+        align-items: center;      /* center vertically */
+    }
+
+#startGameBtn {
+  background: #333333;
+  border: solid;
+  border-color: brown;
+  border-radius: 5px;
+  color: rgb(202, 69, 69);
+  font-size: 1.5rem;
+  padding: 15px 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#startGameBtn:hover {
+  background: #303030;
+  border-color: rgb(247, 202, 202);
+  transform: scale(1.01);
+}
+
+#startGameBtn:active {
+  transform: scale(0.95);
+  box-shadow: 0 3px 10px rgba(0, 13, 255, 0.5);
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 1;
+  animation: particle-fly var(--duration, 0.7s) linear forwards;
+
+
+  box-shadow: 0 0 8px white;;
+}
+
+@keyframes particle-fly {
+  0% {
+    transform: translate(0, 0) scale(10);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/************************************************************************* Game Props */
+
+#wall {
+  position: absolute;
+  top: 800px; /* Adjust this height where you want the wall */
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-color: #654321; /* a brown wall color */
+  z-index: 10; /* above enemies */
+}
+
+
+/************************************************************************* Ability Panel */
+
+#hotbar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5); /* transparent dark bar */
+  border-top: 2px solid #333;
+  border-radius: 12px 12px 0 0;
+  z-index: 1000;
+}
+
+.hotbar-slot {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background-color: #222;
+  border: 2px solid #555;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.hotbar-slot:hover {
+  transform: scale(1.1);
+  border-color: orange;
+}
+
+.hotbar-slot img {
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+}
+
+.hotbar-count {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 14px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 2px 4px;
+  border-radius: 4px;
+  pointer-events: none;
+  font-family: monospace;
+}
+
+
+
+/************************************************************************* Loot Styles */
+
+/* Loot visuals */
+.loot {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 999;
+  animation: bob 1s infinite ease-in-out;
+}
+
+.rocket-loot {
+  color: orange;
+  text-shadow: 0 0 4px yellow;
+}
+
+/* Float bobbing */
+@keyframes bob {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* Floating text feedback */
+.floating-text {
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  animation: floatText 1s ease-out forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@keyframes floatText {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
