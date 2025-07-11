@@ -29,6 +29,10 @@
 
   <div id="killCounter">Enemies Killed: 0</div>
 
+  <div id="waveInfo">Wave: 0</div>
+<div id="enemiesRemainingInfo">Enemies Remaining: 0</div>
+
+
 
 
  
@@ -45,6 +49,10 @@
       <div class="hotbar-slot" id="rocketSlot" data-ability="rocket">
         <img src="images/loot/rocket-icon.png" alt="Rocket">
         <span class="hotbar-count" id="rocketCountLabel">5</span>
+      </div>
+
+            <div class="hotbar-slot" id="bouncyBallSlot" data-ability="bouncyBall">
+        <img src="images/loot/ball-icon.png" alt="Bouncy Ball">
       </div>
       
 
