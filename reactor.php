@@ -44,16 +44,7 @@
     
 
 
-    <div id="hotbar">
 
-      <div class="hotbar-slot" id="rocketSlot" data-ability="rocket">
-        <img src="images/loot/rocket-icon.png" alt="Rocket">
-        <span class="hotbar-count" id="rocketCountLabel">5</span>
-      </div>
-
-            <div class="hotbar-slot" id="bouncyBallSlot" data-ability="bouncyBall">
-        <img src="images/loot/ball-icon.png" alt="Bouncy Ball">
-      </div>
       
 
       
@@ -65,14 +56,18 @@
     // Your JavaScript game logic goes here
     console.log('Game is ready!');
   </script>
-    <script src="enemies/enemyprofiles.js"></script>
-    <script src="enemies/enemyArrays.js"></script>
-    <script src="enemies/enemyLogic.js"></script>
-    <script src="abilities.js"></script>
-    <script src="sfx.js"></script>
-    <script src="loot.js"></script>
 
-    <script src="logic.js"></script>
+
+
+    <script type="module">
+  import { initGame } from './js/game.js';
+
+  // When the page loads, initialize the start button etc.
+  window.addEventListener("DOMContentLoaded", () => {
+    initGame();
+  });
+</script>
+
 
 </body>
 
