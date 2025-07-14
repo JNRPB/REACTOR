@@ -1,23 +1,17 @@
     body {
 background-color: #333333;
     }
+
+    .enemy-class {
+  transition: left 0.15s ease-out, top 0.15s ease-out;
+}
+
     
     
     
     
     
-    #gameArea {
-        width: 1200px;
-        height: 900px;
-        background-color: #2b2b2b;
-        border: 2px solid #888787;
-        position: relative;
-        overflow: hidden;
-        margin: 20px auto;
-        display: flex;
-        justify-content: center;  /* center horizontally */
-        align-items: center;      /* center vertically */
-    }
+
 
 #startGameBtn {
   background: #333333;
@@ -80,85 +74,41 @@ background-color: #333333;
   z-index: 10; /* above enemies */
 }
 
-.bullet {
-  box-shadow: 0 0 5px white;
-}
 
 
 
-/************************************************************************* Ability Panel */
 
-#hotbar {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+#gameWrapper {
   display: flex;
-  gap: 8px;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.5); /* transparent dark bar */
-  border-top: 2px solid #333;
-  border-radius: 12px 12px 0 0;
-  z-index: 1000;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center; /* optional */
 }
 
-.hotbar-slot {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  background-color: #222;
-  border: 2px solid #555;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.hotbar-slot:hover {
-  transform: scale(1.1);
-  border-color: orange;
-}
-
-.hotbar-slot img {
-  width: 32px;
-  height: 32px;
-  pointer-events: none;
-}
-
-.hotbar-count {
-  position: absolute;
-  bottom: 2px;
-  right: 4px;
-  font-size: 14px;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 2px 4px;
-  border-radius: 4px;
-  pointer-events: none;
+#statsPanel {
   font-family: monospace;
+  color: #fff;
+  background: #222;
+  padding: 10px 15px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  min-width: 180px;
+  box-shadow: 0 0 10px #000;
+  /* You can add height if you want it exactly match game area height */
+  height: 900px; 
 }
 
-.bouncy-ball {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: orange;
-  border-radius: 50%;
-  z-index: 10;
+#gameArea {
+  width: 1200px;
+  height: 900px;
+  background-color: #2b2b2b;
+  border: 2px solid #888787;
+  position: relative;
+  overflow: hidden;
+  /* margin: 0;  no margin needed */
 }
 
-#aimArrow {
-  position: absolute;
-  width: 4px;
-  height: 100px; /* will be adjusted by JS */
-  background-color: red;
-  transform-origin: bottom center;
-  display: none;
-  pointer-events: none;
-  z-index: 5;
-}
+
 
 
 

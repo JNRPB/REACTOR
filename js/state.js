@@ -12,3 +12,16 @@ export const gameState = {
     /** @type {any[]} */
     activeEnemies: [],
 }
+
+export const gameStats = {
+  wave: 0,
+  enemiesSpawned: 0,
+  enemiesKilled: 0,
+  enemiesHitShield: 0,
+  enemiesHitReactor: 0,
+  totalDamageDealt: 0,
+  damageTaken: 0,
+  rocketsUsed: 0,
+  primaryShotsFired: 0,
+  primaryHits: 0,
+}

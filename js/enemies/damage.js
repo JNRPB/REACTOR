@@ -1,16 +1,22 @@
-import { createParticles } from './particles.js';
-import { gameState } from '../state.js';
+import { createParticles } from "./particles.js";
+import { gameState } from "../state.js";
+import { updateBossHealthBar } from "./boss.js";
 
 export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
-
-  radius = 80
-
-console.log("damageNearbyEnemies called with", activeEnemies.length, "enemies");
-console.log("activeEnemies:", activeEnemies);
-
-
+  console.log(
+    "damageNearbyEnemies called with",
+    activeEnemies.length,
+    "enemies"
+  );
+  console.log("activeEnemies:", activeEnemies);
 
   activeEnemies.forEach((enemy) => {
+    if (
+      !enemy ||
+      enemy.dataset.dead === "true" ||
+      !gameState.gameArea.contains(enemy)
+    )
+      return;
     const rect = enemy.getBoundingClientRect();
     const gameAreaRect = gameState.gameArea.getBoundingClientRect();
 
@@ -21,17 +27,9 @@ console.log("activeEnemies:", activeEnemies);
     const dy = y - enemyY;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    console.log(`${enemy.dataset.name}:`);
-console.log("Explosion at:", x, y);
-console.log("Enemy center at:", enemyX, enemyY);
-console.log("Distance:", distance);
-console.log("Radius:", radius);
-
-
     if (distance < radius) {
-      console.log(`Enemy ${enemy.dataset.name} distance: ${distance}`);
       damageEnemy(enemy, damageAmount);
-      
+      knockbackEnemy(enemy, x, y, damageAmount);
     }
   });
 }
@@ -39,6 +37,19 @@ console.log("Radius:", radius);
 export function damageEnemy(enemy, amount, activeEnemies) {
   let currentHp = parseInt(enemy.dataset.hp, 10);
   currentHp -= amount;
+  const hitSound = document.getElementById("enemyHitSound");
+  if (hitSound) {
+    const clone = hitSound.cloneNode();  // allow overlapping hits
+    clone.volume = Math.min(1, 0.6 + Math.random() * 0.5);  // vary volume a bit
+    clone.playbackRate = 0.9 + Math.random() * 0.2;  // vary pitch a bit
+    clone.play();
+
+    clone.volume = 0.4 + Math.random() * 0.6; // 0.4 to 1.0
+    clone.playbackRate = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+
+
+
+}
 
   showDamageNumber(enemy, amount);
 
@@ -57,8 +68,7 @@ export function damageEnemy(enemy, amount, activeEnemies) {
   const y = rect.top - gameAreaRect.top + enemy.offsetHeight / 2;
 
   if (currentHp <= 0) {
-
-     enemy.dataset.dead = "true";
+    enemy.dataset.dead = "true";
     // Play enemy death sound with slight random variation
     const base = document.getElementById("enemyDeathSound");
     if (base) {
@@ -73,15 +83,11 @@ export function damageEnemy(enemy, amount, activeEnemies) {
     const duration = size * 30 + 5;
 
     createParticles(x, y, particleCount, duration, color);
-      if (gameState.gameArea.contains(enemy)) {
-    gameState.gameArea.removeChild(enemy);
-  }
-
-    console.log("Enemy died. Spawning guaranteed rocket drop.");
-
-    if (Math.random() < 0.1) {
-      spawnRocketLoot(x, y);
+    if (gameState.gameArea.contains(enemy)) {
+      gameState.gameArea.removeChild(enemy);
     }
+
+
 
     gameState.enemiesKilled++;
 
@@ -98,6 +104,26 @@ export function damageEnemy(enemy, amount, activeEnemies) {
   }
 }
 
+export function knockbackEnemy(enemy, fromX, fromY, forceAmount) {
+  if (typeof enemy.x !== "number" || typeof enemy.y !== "number") return;
+
+  const enemyRect = enemy.getBoundingClientRect();
+  const gameRect = gameState.gameArea.getBoundingClientRect();
+  const enemyX = enemyRect.left - gameRect.left + enemy.offsetWidth / 2;
+  const enemyY = enemyRect.top - gameRect.top + enemy.offsetHeight / 2;
+
+  const dx = enemyX - fromX;
+  const dy = enemyY - fromY;
+  const distance = Math.sqrt(dx * dx + dy * dy) || 1; // avoid divide by 0
+
+  const velocityX = (dx / distance) * (forceAmount / 2.5);
+  const velocityY = (dy / distance) * (forceAmount / 2.5);
+
+enemy.knockbackVX = velocityX;
+enemy.knockbackVY = velocityY;
+
+
+}
 
 function showDamageNumber(enemy, amount, gameArea) {
   const dmg = document.createElement("div");

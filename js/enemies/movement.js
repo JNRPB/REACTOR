@@ -1,65 +1,61 @@
+import { playShieldHitSound } from "../audio/handlers.js";
 import {
   enemyHitsReactor,
   enemyHitsShield,
   reactorHealth,
-  shieldDown
-} from '../defence/defence.js';
+  shieldDown,
+} from "../defence/defence.js";
 
-import {gameState} from "../state.js";
+import { gameState } from "../state.js";
 
-
-export function moveEnemies(gameArea, activeEnemies, mouseX, mouseY, shield, shieldDown, reactorHealthRef, onReactorDamage, onGameOver) {
+export function moveEnemies(
+  gameArea,
+  activeEnemies,
+  mouseX,
+  mouseY,
+  shield,
+  shieldDown,
+  reactorHealthRef,
+  onReactorDamage,
+  onGameOver
+) {
   const areaHeight = gameArea.clientHeight;
   const shieldTop = shield.offsetTop;
-    if (!Array.isArray(activeEnemies)) {
+  if (!Array.isArray(activeEnemies)) {
     console.warn("moveEnemies called without activeEnemies array");
     return;
   }
   for (let i = activeEnemies.length - 1; i >= 0; i--) {
     let enemy = activeEnemies[i];
 
-    // Move enemy down
+    enemy.x += enemy.knockbackVX;
+    enemy.y += enemy.knockbackVY;
     enemy.y += parseFloat(enemy.dataset.speed);
-    enemy.style.top = enemy.y + "px";
-
-    //Repel Logic
-    
-    const repelRadius = 100;
-    const repelStrength = 0.325; 
-
-    // Get enemy center
-    const enemyRect = enemy.getBoundingClientRect();
-    const gameRect = gameArea.getBoundingClientRect();
-    const enemyX = enemyRect.left + enemy.offsetWidth / 2 - gameRect.left;
-    const enemyY = enemyRect.top + enemy.offsetHeight / 2 - gameRect.top;
-
-    // Vector from mouse to enemy
-    const dx = enemyX - mouseX;
-    const dy = enemyY - mouseY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < repelRadius) {
-      const force = ((repelRadius - distance) / repelRadius) * repelStrength;
-      const offsetX = (dx / distance) * force;
-      const offsetY = (dy / distance) * force;
-
-      const currentLeft = parseFloat(enemy.style.left);
-      const currentTop = parseFloat(enemy.style.top);
-
-      // Slightly push enemy away from cursor
-      enemy.style.left = `${currentLeft + offsetX}px`;
-      enemy.style.top = `${currentTop + offsetY}px`;
-
-      // Keep .y in sync with visual position
-      enemy.y = currentTop + offsetY;
-    }
+    enemy.knockbackVX *= 0.9;
+    enemy.knockbackVY *= 0.9;
+    if (Math.abs(enemy.knockbackVX) < 0.01) enemy.knockbackVX = 0;
+    if (Math.abs(enemy.knockbackVY) < 0.01) enemy.knockbackVY = 0;
+    enemy.style.left = `${enemy.x}px`;
+    enemy.style.top = `${enemy.y}px`;
 
     // Check if enemy reached the shield
     if (!shieldDown && enemy.y + enemy.offsetHeight > shieldTop) {
       enemyHitsShield(enemy, gameArea, activeEnemies);
+      playShieldHitSound();
+
     } else if (enemy.y > areaHeight) {
       // Enemy fell past game area, remove it and damage REACTOR
       enemyHitsReactor(enemy, gameArea, activeEnemies);
+    }
+    const areaWidth = gameArea.clientWidth;
+    const maxX = areaWidth - enemy.offsetWidth;
+
+    if (enemy.x < 0) {
+      enemy.x = 0;
+      enemy.knockbackVX = -enemy.knockbackVX * 0.7; // bounce with energy loss
+    } else if (enemy.x > maxX) {
+      enemy.x = maxX;
+      enemy.knockbackVX = -enemy.knockbackVX * 0.7;
     }
   }
 }

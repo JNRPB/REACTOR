@@ -1,24 +1,17 @@
-import { spawnBoss } from './boss.js';
+import { spawnBoss } from "./boss.js";
 import { spawnEnemy } from "./spawn.js";
-import { gameState } from "../state.js";
-import { level1Enemies } from './enemyLevelGroups.js';
+import { gameState, gameStats } from "../state.js";
+import { level1Enemies } from "./enemyLevelGroups.js";
+import { updateStatsPanel } from "../utilities.js";
 
-let wave = 1;
+
+let wave = 0;
 let enemiesSpawnedThisWave = 0;
 let maxWaves = 10; // or remove this if you want endless waves
 let waveInProgress = false;
 
-function updateWaveInfo(waveNumber) {
-  const waveInfo = document.getElementById("waveInfo");
-  waveInfo.textContent = `Wave: ${waveNumber}`;
-}
-
-function updateEnemiesRemaining() {
-  const enemiesRemainingInfo = document.getElementById("enemiesRemainingInfo");
-  enemiesRemainingInfo.textContent = `Enemies Remaining: ${gameState.activeEnemies.length}`;
-}
-
 function spawnWave(gameArea) {
+  if (waveInProgress) return;
   if (wave > maxWaves) {
     console.log("All waves completed!");
     return;
@@ -27,7 +20,8 @@ function spawnWave(gameArea) {
   waveInProgress = true;
   enemiesSpawnedThisWave = 0;
 
-  updateWaveInfo(wave); // Added here to update wave display at start of wave
+  gameStats.wave++;
+  updateStatsPanel(); // Added here to update wave display at start of wave
 
   const enemiesInWave = 5 + wave * 3;
 
@@ -40,16 +34,23 @@ function spawnWave(gameArea) {
 
     spawnEnemy(gameArea, level1Enemies);
     enemiesSpawnedThisWave++;
-
-    updateEnemiesRemaining(); // Added here to update enemies remaining after spawn
+     // Added here to update enemies remaining after spawn
 
     if (enemiesSpawnedThisWave >= enemiesInWave) {
       clearInterval(waveInterval);
-      wave++;
-      waveInProgress = false;
 
-      setTimeout(spawnWave(gameArea), 4000);
+      const checkEnemiesInterval = setInterval(() => {
+        
+
+        if (gameState.activeEnemies.length === 0) {
+          clearInterval(checkEnemiesInterval);
+          wave++;
+          waveInProgress = false;
+          spawnWave(gameArea);
+        }
+      }, 500);
     }
   }, 400);
 }
+
 export { spawnWave };

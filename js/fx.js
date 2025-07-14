@@ -49,3 +49,32 @@ export function screenShake(duration = 300, intensity = 5) {
 
   requestAnimationFrame(shake);
 }
+
+//***********************************************************************************Primary Weapon Explosion */
+
+  export function primaryExplosion(x, y, radius){
+      const explosion = document.createElement("div");
+  explosion.classList.add("click-explosion");
+  explosion.style.position = "absolute";
+  explosion.style.left = `${x - radius / 2}px`;
+  explosion.style.top = `${y - radius / 2}px`;
+  explosion.style.width = '30px';
+  explosion.style.height = '30px';
+  explosion.style.borderRadius = "50%";
+  explosion.style.background = "rgba(255, 165, 0, 0.6)";
+  explosion.style.pointerEvents = "none";
+  explosion.style.zIndex = "1000";
+  explosion.style.transition = "transform 0.4s ease-out, opacity 0.4s ease-out";
+
+  gameState.gameArea.appendChild(explosion);
+
+  // Animate and remove
+  requestAnimationFrame(() => {
+    explosion.style.transform = "scale(2)";
+    explosion.style.opacity = "0";
+  });
+
+  setTimeout(() => {
+    explosion.remove();
+  }, 400);
+  }

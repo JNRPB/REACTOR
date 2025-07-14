@@ -1,5 +1,6 @@
 import { screenShake } from '../fx.js';
-import { gameState } from '../state.js';
+import { gameState, gameStats } from '../state.js';
+import { updateStatsPanel } from '../utilities.js';
 
 export let reactorHealth = 300;
 export let shieldHealth = 50;
@@ -45,7 +46,8 @@ export function enemyHitsShield(enemy, gameArea, activeEnemies) {
   const impactY = enemyRect.top + enemyRect.height / 2 - gameAreaRect.top;
 
   gameState.shieldHealth -= damage;
-  shieldDisplay.textContent = `Shield: ${gameState.shieldHealth}`;
+  gameStats.enemiesHitShield ++;
+  updateStatsPanel();
 
   gameArea.removeChild(enemy);
   const index = activeEnemies.indexOf(enemy);

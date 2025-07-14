@@ -19,38 +19,43 @@
   <audio id="rocketExplosion" src="audio/impacts/rocketImpact.mp3" preload="auto"></audio>
   <audio id="ambientMusic" src="audio/Music/mesmerizingGalaxyLoop.mp3" preload="auto" loop></audio>
   <audio id="enemyDeathSound" src="audio/impacts/enemyADie.mp3" preload="auto"></audio>
+  <audio id="enemyHitSound" src="audio/impacts/hitA.mp3" preload="auto"></audio>
+  <audio id="shieldHitA" src="audio/impacts/shieldHitA.mp3" preload="auto"></audio>
+
 
 
 
 
   <h1 style="text-align: center;">REACTOR</h1>
-  <div id="shieldDisplay" style="position: fixed; top: 10px; left: 10px; font-size: 20px; color: white;">Shield: 5</div>
-  <div id="reactorDisplay" style="position: fixed; top: 10px; left: 100px; font-size: 20px; color: white;">Reactor Health: 300</div>
 
-  <div id="killCounter">Enemies Killed: 0</div>
 
-  <div id="waveInfo">Wave: 0</div>
-<div id="enemiesRemainingInfo">Enemies Remaining: 0</div>
 
 
 
 
  
-
-  <div id="gameArea">
-    <button id="startGameBtn">Start Game</button>
-    <div id="shield"></div>
-    <canvas id="fxCanvas"></canvas>
-    
-
-
-
-      
-
-      
+  <div id= "gameWrapper">
+        <div id="statsPanel">
+      <h3>Stats</h3>
+      <p>Wave: <span id="stat-wave">0</span></p>
+      <p>Spawned: <span id="stat-spawned">0</span></p>
+      <p>Killed: <span id="stat-killed">0</span></p>
+      <p>Shield Hits: <span id="stat-shieldHits">0</span></p>
+      <p>Reactor Hits: <span id="stat-reactorHits">0</span></p>
+      <p>Total Damage: <span id="stat-damageDealt">0</span></p>
     </div>
-
+    <div id="gameArea">
+      <button id="startGameBtn">Start Game</button>
+      <div id="shield"></div>
+      <canvas id="fxCanvas"></canvas>
+    
+  
+ 
   </div>
+  
+
+
+</div>
 
   <script>
     // Your JavaScript game logic goes here
