@@ -1,24 +1,20 @@
-import { spawnBoss } from "./enemies/boss.js";
-import { spawnWave } from "./enemies/logic.js";
 import { moveEnemies } from "./enemies/movement.js";
-import { drawParticles } from "./fx.js";
-import { gameState } from "./state.js"
-
+import { gameState } from "./state.js";
 
 let lastFrameTime = 0;
-let lastWaveTime = 0;
-const waveCooldown = 10;
 
 export function gameLoop(timestamp = 0) {
-  const deltaTime = (timestamp - lastFrameTime) / 1000; // seconds
+  const canvas = document.getElementById("fxCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Clear canvas for this frame
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Calculate delta time for animations/logic
+  const deltaTime = (timestamp - lastFrameTime) / 1000;
   lastFrameTime = timestamp;
 
-  if (timestamp / 1000 - lastWaveTime > waveCooldown) {
-    spawnWave(document.getElementById("gameArea"));
-    //spawnBoss(document.getElementById("gameArea"), gameState.activeEnemies, 0)
-    lastWaveTime = timestamp;
-  }
-  
+  // Move DOM and object enemies
   moveEnemies(
     document.getElementById("gameArea"),
     gameState.activeEnemies,
@@ -28,15 +24,15 @@ export function gameLoop(timestamp = 0) {
     gameState.shieldDown,
     { value: gameState.reactorHealth },
     () => {
-      /* onReactorDamage Function */
+      // onReactorDamage callback
     },
     () => {
-      /* gameOver Function */
+      // onGameOver callback
     }
   );
-  drawParticles(deltaTime);
-  
-  
 
+  // Optional: drawParticles(deltaTime);
+
+  // Request next animation frame to continue game loop
   requestAnimationFrame(gameLoop);
 }

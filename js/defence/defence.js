@@ -1,14 +1,12 @@
-import { screenShake } from '../fx.js';
-import { gameState, gameStats } from '../state.js';
-import { updateStatsPanel } from '../utilities.js';
+import { screenShake } from "../fx.js";
+import { gameState, gameStats } from "../state.js";
+import { updateStatsPanel } from "../utilities.js";
 
 export let reactorHealth = 300;
-export let shieldHealth = 50;
+export let shieldHealth = 5;
 export let shieldDown = false;
 export let lastReactorDamageTime = 0;
 
-const reactorDisplay = document.getElementById("reactorDisplay");
-const shieldDisplay = document.getElementById("shieldDisplay");
 const shieldElement = document.getElementById("shield");
 
 export function enemyHitsReactor(enemy, gameArea, activeEnemies) {
@@ -16,7 +14,8 @@ export function enemyHitsReactor(enemy, gameArea, activeEnemies) {
   const damage = Math.round(10 / weight);
 
   reactorHealth -= damage;
-  reactorDisplay.textContent = `Reactor Health: ${reactorHealth}`;
+  gameStats.enemiesHitReactor++;
+  updateStatsPanel();
 
   gameArea.removeChild(enemy);
   const index = activeEnemies.indexOf(enemy);
@@ -34,51 +33,34 @@ export function enemyHitsReactor(enemy, gameArea, activeEnemies) {
 }
 
 export function enemyHitsShield(enemy, gameArea, activeEnemies) {
+  if (enemy.dataset.dead === "true") return;
 
-  if(enemy.dataset.dead === "true") return;
   const weight = parseInt(enemy.dataset.weight, 10) || 1;
   const damage = Math.round(10 / weight);
 
-  const gameAreaRect = gameArea.getBoundingClientRect();
-  const enemyRect = enemy.getBoundingClientRect();
-
-  const impactX = enemyRect.left + enemyRect.width / 2 - gameAreaRect.left;
-  const impactY = enemyRect.top + enemyRect.height / 2 - gameAreaRect.top;
-
+  // Reduce shield health
   gameState.shieldHealth -= damage;
-  gameStats.enemiesHitShield ++;
+  if (gameState.shieldHealth < 0) gameState.shieldHealth = 0;
+
+  gameStats.enemiesHitShield++;
   updateStatsPanel();
 
+  // Remove enemy from DOM and activeEnemies array
   gameArea.removeChild(enemy);
   const index = activeEnemies.indexOf(enemy);
   if (index > -1) activeEnemies.splice(index, 1);
 
-  shieldElement.style.backgroundColor = "red";
-  setTimeout(() => (shieldElement.style.backgroundColor = "#654321"), 50);
+  // Update shield bar width
+  const shieldBar = document.getElementById("shieldBar");
+  const maxShieldHealth = 300; // adjust if needed
+  const healthPercent = (gameState.shieldHealth / maxShieldHealth) * 100;
+  shieldBar.style.width = healthPercent + "%";
 
   screenShake();
 
-  // Particle burst
-  const baseSpeed = 300;
-  for (let i = 0; i < 30; i++) {
-    const spread = 0.6;
-
-    window.fxParticles.push({
-      x: impactX,
-      y: impactY,
-      vx: (Math.random() * 2 - 1) * spread * baseSpeed,
-      vy: -(Math.random() * (baseSpeed * 0.5) + baseSpeed * 0.5),
-      radius: Math.random() * 5 + 2,
-      life: 0.6,
-      maxLife: 0.6,
-    });
-  }
-
-  if (shieldHealth <= 0) {
-    shieldHealth = 0;
-    shieldDown = true;
+  // Check if shield is down
+  if (gameState.shieldHealth <= 0) {
+    gameState.shieldHealth = 0;
+    gameState.shieldDown = true;
   }
 }
-
-
-

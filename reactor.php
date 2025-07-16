@@ -15,6 +15,8 @@
   </style>
 </head>
 <body>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
 
   <audio id="rocketExplosion" src="audio/impacts/rocketImpact.mp3" preload="auto"></audio>
   <audio id="ambientMusic" src="audio/Music/mesmerizingGalaxyLoop.mp3" preload="auto" loop></audio>
@@ -45,8 +47,21 @@
       <p>Total Damage: <span id="stat-damageDealt">0</span></p>
     </div>
     <div id="gameArea">
-      <button id="startGameBtn">Start Game</button>
-      <div id="shield"></div>
+      <div id="welcomeScreen">
+        <h1> Welcome to REACTOR </h1>
+        <p> The invaders have found us! they are attacking from above, fire your weapon <strong>(left click)</strong>
+          to defeat them!</p>
+
+          <button id="startGameBtn">Start Game</button>
+      </div>
+      
+      <div id="shieldContainer">
+        <div id="shieldBar"></div>
+      </div>
+      <div id="waveCounter">Wave: 1</div>
+      <div id="waveTimer" style="display: none; font-size: 24px; color: white; text-align: center; margin-top: 10px;"></div>
+
+
       <canvas id="fxCanvas"></canvas>
     
   

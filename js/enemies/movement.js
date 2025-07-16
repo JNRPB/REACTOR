@@ -2,10 +2,7 @@ import { playShieldHitSound } from "../audio/handlers.js";
 import {
   enemyHitsReactor,
   enemyHitsShield,
-  reactorHealth,
-  shieldDown,
 } from "../defence/defence.js";
-
 import { gameState } from "../state.js";
 
 export function moveEnemies(
@@ -20,42 +17,75 @@ export function moveEnemies(
   onGameOver
 ) {
   const areaHeight = gameArea.clientHeight;
-  const shieldTop = shield.offsetTop;
+  const areaWidth = gameArea.clientWidth;
+  const shieldTop = shieldContainer.offsetTop;
+
   if (!Array.isArray(activeEnemies)) {
-    console.warn("moveEnemies called without activeEnemies array");
+    console.warn("moveEnemies called with non-array:", activeEnemies);
     return;
   }
+
   for (let i = activeEnemies.length - 1; i >= 0; i--) {
-    let enemy = activeEnemies[i];
+    const enemy = activeEnemies[i];
 
-    enemy.x += enemy.knockbackVX;
-    enemy.y += enemy.knockbackVY;
-    enemy.y += parseFloat(enemy.dataset.speed);
-    enemy.knockbackVX *= 0.9;
-    enemy.knockbackVY *= 0.9;
-    if (Math.abs(enemy.knockbackVX) < 0.01) enemy.knockbackVX = 0;
-    if (Math.abs(enemy.knockbackVY) < 0.01) enemy.knockbackVY = 0;
-    enemy.style.left = `${enemy.x}px`;
-    enemy.style.top = `${enemy.y}px`;
+    // ========== DOM-based Enemy ==========
+    if (enemy instanceof HTMLElement) {
+      const speed = parseFloat(enemy.dataset?.speed || "1");
 
-    // Check if enemy reached the shield
-    if (!shieldDown && enemy.y + enemy.offsetHeight > shieldTop) {
-      enemyHitsShield(enemy, gameArea, activeEnemies);
-      playShieldHitSound();
+      enemy.x += enemy.knockbackVX;
+      enemy.y += enemy.knockbackVY;
+      enemy.y += speed;
 
-    } else if (enemy.y > areaHeight) {
-      // Enemy fell past game area, remove it and damage REACTOR
-      enemyHitsReactor(enemy, gameArea, activeEnemies);
-    }
-    const areaWidth = gameArea.clientWidth;
-    const maxX = areaWidth - enemy.offsetWidth;
+      enemy.knockbackVX *= 0.9;
+      enemy.knockbackVY *= 0.9;
+      if (Math.abs(enemy.knockbackVX) < 0.01) enemy.knockbackVX = 0;
+      if (Math.abs(enemy.knockbackVY) < 0.01) enemy.knockbackVY = 0;
 
-    if (enemy.x < 0) {
-      enemy.x = 0;
-      enemy.knockbackVX = -enemy.knockbackVX * 0.7; // bounce with energy loss
-    } else if (enemy.x > maxX) {
-      enemy.x = maxX;
-      enemy.knockbackVX = -enemy.knockbackVX * 0.7;
+      // Update DOM position
+      enemy.style.left = `${enemy.x}px`;
+      enemy.style.top = `${enemy.y}px`;
+
+      // Check shield collision
+      if (!shieldDown && enemy.y + enemy.offsetHeight > shieldTop) {
+        enemyHitsShield(enemy, gameArea, activeEnemies);
+        playShieldHitSound();
+        continue;
+      }
+
+      // Check reactor collision
+      if (enemy.y > areaHeight) {
+        enemyHitsReactor(enemy, gameArea, activeEnemies);
+        continue;
+      }
+
+      // Wall bounce
+      const maxX = areaWidth - enemy.offsetWidth;
+      if (enemy.x < 0 || enemy.x > maxX) {
+        enemy.x = Math.max(0, Math.min(enemy.x, maxX));
+        enemy.knockbackVX = -enemy.knockbackVX * 0.7;
+      }
+
+    // ========== Object-Based Enemy ==========
+    } else if (enemy && typeof enemy === "object" && "x" in enemy && "y" in enemy) {
+      const speed = typeof enemy.speed === "number" ? enemy.speed : 1;
+
+      if (!enemy.isFrozen) {
+        enemy.x += enemy.knockbackVX || 0;
+        enemy.y += enemy.knockbackVY || 0;
+        enemy.y += speed;
+
+        if (enemy.knockbackVX) enemy.knockbackVX *= 0.9;
+        if (enemy.knockbackVY) enemy.knockbackVY *= 0.9;
+      }
+
+      // Add custom behavior for object enemies hitting boundaries/reactor
+      if (enemy.y > areaHeight && typeof enemy.onFall === "function") {
+        enemy.onFall(enemy, gameArea, activeEnemies);
+      }
+
+    // ========== Unknown Format ==========
+    } else {
+      console.warn("Unknown enemy type detected in moveEnemies:", enemy);
     }
   }
 }

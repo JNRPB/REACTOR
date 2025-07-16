@@ -3,108 +3,116 @@ import { gameState } from "../state.js";
 import { updateBossHealthBar } from "./boss.js";
 
 export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
-  console.log(
-    "damageNearbyEnemies called with",
-    activeEnemies.length,
-    "enemies"
-  );
-  console.log("activeEnemies:", activeEnemies);
-
+  
   activeEnemies.forEach((enemy) => {
-    if (
-      !enemy ||
-      enemy.dataset.dead === "true" ||
-      !gameState.gameArea.contains(enemy)
-    )
-      return;
-    const rect = enemy.getBoundingClientRect();
-    const gameAreaRect = gameState.gameArea.getBoundingClientRect();
+    if (!enemy) return;
 
-    const enemyX = rect.left - gameAreaRect.left + rect.width / 2;
-    const enemyY = rect.top - gameAreaRect.top + rect.height / 2;
+    // === DOM element enemies ===
+    if (enemy instanceof HTMLElement) {
+      if (enemy.dataset.dead === "true" || !gameState.gameArea.contains(enemy)) return;
 
-    const dx = x - enemyX;
-    const dy = y - enemyY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+      const rect = enemy.getBoundingClientRect();
+      const gameAreaRect = gameState.gameArea.getBoundingClientRect();
 
-    if (distance < radius) {
-      damageEnemy(enemy, damageAmount);
-      knockbackEnemy(enemy, x, y, damageAmount);
+      const enemyX = rect.left - gameAreaRect.left + rect.width / 2;
+      const enemyY = rect.top - gameAreaRect.top + rect.height / 2;
+
+      const dx = x - enemyX;
+      const dy = y - enemyY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < radius) {
+        damageEnemy(enemy, damageAmount, activeEnemies);
+        knockbackEnemy(enemy, x, y, damageAmount);
+      }
+
+    // === JS object enemies (e.g., snipers or for when we convert all to js based canvas objects) ===
+    } else if (typeof enemy === "object" && "x" in enemy && "y" in enemy) {
+      // TODO: Add special handling for object enemies if needed
+      // Example: skip or console.log(enemy.type)
     }
   });
 }
 
+
 export function damageEnemy(enemy, amount, activeEnemies) {
+  if (!enemy) return;
+
+  // Handle object-based enemies
+  if (enemy.isObjectBased) {
+    enemy.health -= amount;
+    if (enemy.health <= 0) {
+      const index = activeEnemies.indexOf(enemy);
+      if (index > -1) activeEnemies.splice(index, 1);
+    }
+    return;
+  }
+
   let currentHp = parseInt(enemy.dataset.hp, 10);
   currentHp -= amount;
+
   const hitSound = document.getElementById("enemyHitSound");
   if (hitSound) {
-    const clone = hitSound.cloneNode();  // allow overlapping hits
-    clone.volume = Math.min(1, 0.6 + Math.random() * 0.5);  // vary volume a bit
-    clone.playbackRate = 0.9 + Math.random() * 0.2;  // vary pitch a bit
+    const clone = hitSound.cloneNode();
+    clone.volume = 0.4 + Math.random() * 0.6;
+    clone.playbackRate = 0.8 + Math.random() * 0.4;
     clone.play();
-
-    clone.volume = 0.4 + Math.random() * 0.6; // 0.4 to 1.0
-    clone.playbackRate = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
-
-
-
-}
+  }
 
   showDamageNumber(enemy, amount);
 
-  // If this enemy is the boss, update boss HP and health bar
   if (enemy.dataset.isBoss === "true") {
     enemy.dataset.hp = currentHp;
-    updateBossHealthBar(enemy);
-    return; // Boss logic handles death, so exit here
+    updateBossHealthBar(enemy, activeEnemies);
+    return;
   }
 
-  // Normal enemy damage and death logic
   const color = window.getComputedStyle(enemy).backgroundColor;
   const rect = enemy.getBoundingClientRect();
-  const gameAreaRect = gameArea.getBoundingClientRect();
+  const gameAreaRect = gameState.gameArea.getBoundingClientRect();
   const x = rect.left - gameAreaRect.left + enemy.offsetWidth / 2;
   const y = rect.top - gameAreaRect.top + enemy.offsetHeight / 2;
 
   if (currentHp <= 0) {
     enemy.dataset.dead = "true";
-    // Play enemy death sound with slight random variation
+
     const base = document.getElementById("enemyDeathSound");
     if (base) {
-      const clone = base.cloneNode(); // allows overlapping sounds
-      clone.volume = 0.7 + Math.random() * 0.3; // vary volume
-      clone.playbackRate = 0.9 + Math.random() * 0.3; // vary pitch
+      const clone = base.cloneNode();
+      clone.volume = 0.7 + Math.random() * 0.3;
+      clone.playbackRate = 0.9 + Math.random() * 0.3;
       clone.play();
     }
 
-    const size = parseInt(enemy.style.width);
-    const particleCount = Math.floor(size * 2);
-    const duration = size * 30 + 5;
+    const size = parseInt(enemy.style.width || "20", 10);
+    createParticles(x, y, Math.floor(size * 2), size * 30 + 5, color);
 
-    createParticles(x, y, particleCount, duration, color);
     if (gameState.gameArea.contains(enemy)) {
       gameState.gameArea.removeChild(enemy);
     }
 
-
-
     gameState.enemiesKilled++;
-
-    // Remove from activeEnemies array
     const index = gameState.activeEnemies.indexOf(enemy);
     if (index > -1) gameState.activeEnemies.splice(index, 1);
   } else {
-    // Enemy still alive - update HP and show visual hit feedback
     enemy.dataset.hp = currentHp;
     enemy.style.opacity = "0.7";
-    setTimeout(() => {
-      enemy.style.opacity = "1";
-    }, 100);
+    setTimeout(() => (enemy.style.opacity = "1"), 100);
   }
 }
 
 export function knockbackEnemy(enemy, fromX, fromY, forceAmount) {
+  if (enemy.isObjectBased) {
+    const dx = enemy.x - fromX;
+    const dy = enemy.y - fromY;
+    const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+    const velocityX = (dx / distance) * (forceAmount / 2.5);
+    const velocityY = (dy / distance) * (forceAmount / 2.5);
+    enemy.knockbackVX = velocityX;
+    enemy.knockbackVY = velocityY;
+    return;
+  }
+
   if (typeof enemy.x !== "number" || typeof enemy.y !== "number") return;
 
   const enemyRect = enemy.getBoundingClientRect();
@@ -114,18 +122,18 @@ export function knockbackEnemy(enemy, fromX, fromY, forceAmount) {
 
   const dx = enemyX - fromX;
   const dy = enemyY - fromY;
-  const distance = Math.sqrt(dx * dx + dy * dy) || 1; // avoid divide by 0
+  const distance = Math.sqrt(dx * dx + dy * dy) || 1;
 
   const velocityX = (dx / distance) * (forceAmount / 2.5);
   const velocityY = (dy / distance) * (forceAmount / 2.5);
 
-enemy.knockbackVX = velocityX;
-enemy.knockbackVY = velocityY;
-
-
+  enemy.knockbackVX = velocityX;
+  enemy.knockbackVY = velocityY;
 }
 
-function showDamageNumber(enemy, amount, gameArea) {
+function showDamageNumber(enemy, amount) {
+  if (enemy.isObjectBased) return;
+
   const dmg = document.createElement("div");
   dmg.textContent = `-${amount}`;
   dmg.style.position = "absolute";
@@ -146,17 +154,10 @@ function showDamageNumber(enemy, amount, gameArea) {
   dmg.style.top = `${y}px`;
 
   gameState.gameArea.appendChild(dmg);
-
-  // Trigger animation
   requestAnimationFrame(() => {
     dmg.style.transform = "translateY(-30px)";
     dmg.style.opacity = "0";
   });
-
-  // Remove after animation
-  setTimeout(() => {
-    dmg.remove();
-  }, 600);
+  setTimeout(() => dmg.remove(), 600);
 }
 
-window.damageEnemy = damageEnemy;

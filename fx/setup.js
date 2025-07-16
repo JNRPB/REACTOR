@@ -1,5 +1,3 @@
-
-
 export function initFxCanvas(gameArea) {
   const canvas = document.getElementById("fxCanvas");
   const ctx = canvas.getContext("2d");
@@ -18,5 +16,5 @@ export function initFxCanvas(gameArea) {
   }
 
   resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
+  //window.addEventListener("resize", resizeCanvas); //unsure if needed until fx canvas is used
 }

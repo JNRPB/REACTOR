@@ -1,4 +1,4 @@
-import { spawnWave } from "./logic.js";
+import { spawnWave } from "./waveLogic.js";
 import { bossList } from "./bossProfiles.js";
 import { createBossParticles } from "./particles.js";
 
@@ -121,7 +121,7 @@ function createFlash() {
   }, 500);
 }
 
-export function updateBossHealthBar(boss) {
+export function updateBossHealthBar(boss, activeEnemies) {
   const healthBar = document.getElementById("bossHealthBar");
   const healthText = document.getElementById("bossHealthText");
   if (!healthBar || !healthText) return;
@@ -152,6 +152,11 @@ export function updateBossHealthBar(boss) {
     // Remove boss after explosion duration
     setTimeout(() => {
       boss.remove();
+            const index = activeEnemies.indexOf(boss);
+      if (index > -1) {
+        activeEnemies.splice(index, 1);
+      }
+      
       spawnWave(document.getElementById("gameArea"));
     }, 3000);
   }

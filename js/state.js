@@ -1,3 +1,5 @@
+
+
 export const gameState = {
     gameArea: null,
     currentAbility: "fists",
@@ -8,9 +10,11 @@ export const gameState = {
     shieldHealth: 50,
     reactorHealth: 300,
     isFiring: false,
-    mouseState: { x: 0, y: 0 },
+    mouseState: { x: 0, y: 0, isDown: false },
     /** @type {any[]} */
     activeEnemies: [],
+    /** @type {any[]} */
+    activeSnipers: [],
 }
 
 export const gameStats = {
@@ -25,3 +29,9 @@ export const gameStats = {
   primaryShotsFired: 0,
   primaryHits: 0,
 }
+
+
+export const objState = {
+  purifierTotem: null,
+  sniper: null,
+};

@@ -18,7 +18,6 @@ export function pickWeightedEnemy(enemyList) {
 
 // Spawns an enemy DOM element in the gameArea
 export function spawnEnemy(gameArea, level1Enemies) {
-  
   let r = pickWeightedEnemy(level1Enemies);
 
   let activeEnemy = document.createElement("div");
@@ -44,10 +43,8 @@ export function spawnEnemy(gameArea, level1Enemies) {
   activeEnemy.x = randomX;
   activeEnemy.knockbackVX = 0;
   activeEnemy.knockbackVY = 0;
-  activeEnemy.style.left = randomX  + "px";
-  activeEnemy.style.top = activeEnemy.y  + "px";
-
-  
+  activeEnemy.style.left = randomX + "px";
+  activeEnemy.style.top = activeEnemy.y + "px";
 
   gameArea.appendChild(activeEnemy);
 

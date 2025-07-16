@@ -9,9 +9,53 @@ background-color: #333333;
     
     
     
+    #gameArea {
+  width: 1200px;
+  height: 900px;
+  background-color: #2b2b2b;
+  border: 2px solid #888787;
+  position: relative;
+  overflow: hidden;
+  /* margin: 0;  no margin needed */
+}
     
-    
+#welcomeScreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
+  width: 600px;   /* example width */
+  height: 400px;  /* example height */
+
+  background-color: rgba(49, 48, 48, 0.85);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  text-align: center;
+  border: 2px solid #888787;
+
+  font-family: 'Orbitron', sans-serif;
+}
+#welcomeScreen h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  color: #00ffff; /* cool neon blue */
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+#welcomeScreen p {
+  font-size: 1.2rem;
+  max-width: 80%;
+  color: #ddd;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
 
 #startGameBtn {
   background: #333333;
@@ -64,14 +108,65 @@ background-color: #333333;
 
 /************************************************************************* Game Props */
 
-#shield {
+#shieldContainer {
   position: absolute;
-  top: 800px; /* Adjust this height where you want the wall */
+  top: 800px;  /* your desired position */
   left: 0;
   width: 100%;
   height: 10px;
-  background-color: #654321; /* a brown wall color */
-  z-index: 10; /* above enemies */
+  background-color: #000000; /* light grey background */
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 10;
+    box-shadow:
+    0 0 15px #00ffff,
+    0 0 30px #00ffff,
+    0 0 40px #00ffff;
+}
+
+#shieldBar {
+  height: 100%;
+  width: 100%;  /* start full */
+  background-color: #00ffff;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #00ffff,
+    0 0 30px #00ffff;
+  border-radius: 5px 0 0 5px;
+  transition: width 0.3s ease;  /* smooth shrinking */
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 10px #00ffff,
+      0 0 20px #00ffff,
+      0 0 30px #00ffff;
+  }
+  50% {
+    box-shadow:
+      0 0 20px #00ffff,
+      0 0 40px #00ffff,
+      0 0 60px #00ffff;
+  }
+}
+
+#waveCounter {
+  position: absolute;
+  top: 820px; /* 10px below shield (shield top 800 + 10 height + 10 spacing) */
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  color: #00ffff;
+  text-shadow:
+    0 0 10px #00ffff,
+    0 0 20px #00ffff,
+    0 0 30px #00ffff;
+  user-select: none;
+  z-index: 10;
 }
 
 
@@ -93,20 +188,16 @@ background-color: #333333;
   border: 1px solid #555;
   border-radius: 8px;
   min-width: 180px;
-  box-shadow: 0 0 10px #000;
+  /*box-shadow: 0 0 10px #000; */
   /* You can add height if you want it exactly match game area height */
   height: 900px; 
+      box-shadow:
+    0 0 10px #00ffff,
+    0 0 10px #00ffff,
+    0 0 50px #00ffff;
 }
 
-#gameArea {
-  width: 1200px;
-  height: 900px;
-  background-color: #2b2b2b;
-  border: 2px solid #888787;
-  position: relative;
-  overflow: hidden;
-  /* margin: 0;  no margin needed */
-}
+
 
 
 
@@ -161,5 +252,6 @@ background-color: #333333;
   left: 0;
   pointer-events: none;
   z-index: 10;
+
 }
 
