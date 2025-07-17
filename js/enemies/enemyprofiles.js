@@ -27,3 +27,14 @@ export const enemyC = {
   weight: 1,
   hp: 25 * 2,
 };
+
+export const enemyD = {
+    name: "enemyD",
+  color: "#cfcbe7ff ",
+  size: 22.69,
+  speed: 0.12,
+  border: "1px solid #1e209eff ",
+  weight: 0.25,
+  hp: 80 * 2,
+  isShielded: true,
+}

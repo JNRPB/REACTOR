@@ -1,4 +1,4 @@
-import { enemyA, enemyB, enemyC } from "./enemyprofiles.js"
+import { enemyA, enemyB, enemyC, enemyD } from "./enemyprofiles.js"
 
 
 
@@ -8,3 +8,9 @@ export const level1Enemies = [
     enemyB, 
     enemyC
 ]
+
+export const shieldEnemy = {
+
+
+    enemyD
+}

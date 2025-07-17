@@ -38,8 +38,12 @@ export function enemyHitsShield(enemy, gameArea, activeEnemies) {
   const weight = parseInt(enemy.dataset.weight, 10) || 1;
   const damage = Math.round(10 / weight);
 
-  // Reduce shield health
+  if(enemy.isShielded){
+    gameState.shieldHealth -= gameState.shieldHealth /2;
+  } else {
   gameState.shieldHealth -= damage;
+  }
+
   if (gameState.shieldHealth < 0) gameState.shieldHealth = 0;
 
   gameStats.enemiesHitShield++;

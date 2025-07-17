@@ -1,7 +1,7 @@
 import { spawnBoss } from "./boss.js";
-import { spawnEnemy } from "./spawn.js";
+import { spawnEnemy, spawnShieldEnemy } from "./spawn.js";
 import { gameState, gameStats} from "../state.js";
-import { level1Enemies } from "./enemyLevelGroups.js";
+import { level1Enemies, shieldEnemy } from "./enemyLevelGroups.js";
 import { updateStatsPanel } from "../utilities.js";
 
 let wave = 0;
@@ -19,6 +19,11 @@ export function spawnWave(gameArea) {
     return;
   }
 
+  if (wave !== 4) {
+  gameState.shieldedEnemySpawned = false;
+}
+
+
   wave++;
   gameStats.wave = wave;
   updateStatsPanel();
@@ -33,7 +38,14 @@ export function spawnWave(gameArea) {
     if (wave % 5 === 0 && enemiesSpawnedThisWave === 0) {
       spawnBoss(gameState.gameArea, gameState.activeEnemies);
       enemiesSpawnedThisWave++;
-    } else if (enemiesSpawnedThisWave < enemiesInWave) {
+    } 
+    if (wave === 4 && !gameState.shieldedEnemySpawned) {
+      console.log("Spawning shielded enemy");
+      spawnShieldEnemy(gameState.gameArea, shieldEnemy.enemyD);
+      gameState.shieldedEnemySpawned = true;
+      enemiesSpawnedThisWave++;
+    }
+    else if (enemiesSpawnedThisWave < enemiesInWave) {
       spawnEnemy(gameState.gameArea, level1Enemies);
       enemiesSpawnedThisWave++;
     }

@@ -3,13 +3,13 @@ import { gameState } from "../state.js";
 import { updateBossHealthBar } from "./boss.js";
 
 export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
-  
   activeEnemies.forEach((enemy) => {
     if (!enemy) return;
 
     // === DOM element enemies ===
     if (enemy instanceof HTMLElement) {
-      if (enemy.dataset.dead === "true" || !gameState.gameArea.contains(enemy)) return;
+      if (enemy.dataset.dead === "true" || !gameState.gameArea.contains(enemy))
+        return;
 
       const rect = enemy.getBoundingClientRect();
       const gameAreaRect = gameState.gameArea.getBoundingClientRect();
@@ -26,7 +26,7 @@ export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
         knockbackEnemy(enemy, x, y, damageAmount);
       }
 
-    // === JS object enemies (e.g., snipers or for when we convert all to js based canvas objects) ===
+      // === JS object enemies (e.g., snipers or for when we convert all to js based canvas objects) ===
     } else if (typeof enemy === "object" && "x" in enemy && "y" in enemy) {
       // TODO: Add special handling for object enemies if needed
       // Example: skip or console.log(enemy.type)
@@ -34,9 +34,20 @@ export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
   });
 }
 
-
 export function damageEnemy(enemy, amount, activeEnemies) {
   if (!enemy) return;
+
+  if (enemy.isShielded) {
+    const hitSound = document.getElementById("enemyHitSound");
+    if (hitSound) {
+      const clone = hitSound.cloneNode();
+      clone.volume = 0.4 + Math.random() * 0.6;
+      clone.playbackRate = 0.8 + Math.random() * 0.4;
+      clone.play();
+    }
+    showImmuneText(enemy);
+    return;
+  }
 
   // Handle object-based enemies
   if (enemy.isObjectBased) {
@@ -115,6 +126,8 @@ export function knockbackEnemy(enemy, fromX, fromY, forceAmount) {
 
   if (typeof enemy.x !== "number" || typeof enemy.y !== "number") return;
 
+  if (enemy.isShielded) return;
+
   const enemyRect = enemy.getBoundingClientRect();
   const gameRect = gameState.gameArea.getBoundingClientRect();
   const enemyX = enemyRect.left - gameRect.left + enemy.offsetWidth / 2;
@@ -161,3 +174,32 @@ function showDamageNumber(enemy, amount) {
   setTimeout(() => dmg.remove(), 600);
 }
 
+function showImmuneText(enemy) {
+  if (enemy.isObjectBased) return;
+
+  const dmg = document.createElement("div");
+  dmg.textContent = "IMMUNE";
+  dmg.style.position = "absolute";
+  dmg.style.color = "blue";
+  dmg.style.fontWeight = "bold";
+  dmg.style.fontSize = "22px";
+  dmg.style.pointerEvents = "none";
+  dmg.style.zIndex = 1000;
+  dmg.style.transition = "transform 1s ease-out, opacity 1s ease-out";
+
+  const rect = enemy.getBoundingClientRect();
+  const gameAreaRect = gameState.gameArea.getBoundingClientRect();
+
+  const x = rect.left - gameAreaRect.left + rect.width / 2;
+  const y = rect.top - gameAreaRect.top;
+
+  dmg.style.left = `${x}px`;
+  dmg.style.top = `${y}px`;
+
+  gameState.gameArea.appendChild(dmg);
+  requestAnimationFrame(() => {
+    dmg.style.transform = "translateY(-30px)";
+    dmg.style.opacity = "0";
+  });
+  setTimeout(() => dmg.remove(), 1000);
+}

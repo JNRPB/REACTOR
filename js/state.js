@@ -15,6 +15,7 @@ export const gameState = {
     activeEnemies: [],
     /** @type {any[]} */
     activeSnipers: [],
+    shieldedEnemySpawned: false
 }
 
 export const gameStats = {
