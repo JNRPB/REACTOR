@@ -1,10 +1,10 @@
-import { spawnBoss } from "./boss.js";
+import { spawnBoss } from "./boss/bossSpawnLogic.js";
 import { spawnEnemy, spawnShieldEnemy } from "./spawn.js";
 import { gameState, gameStats} from "../state.js";
 import { level1Enemies, shieldEnemy } from "./enemyLevelGroups.js";
 import { updateStatsPanel } from "../utilities.js";
 
-let wave = 0;
+let wave = 4;
 let enemiesSpawnedThisWave = 0;
 let maxWaves = 100;
 let waveInProgress = false;
@@ -36,7 +36,7 @@ export function spawnWave(gameArea) {
 
   const waveInterval = setInterval(() => {
     if (wave % 5 === 0 && enemiesSpawnedThisWave === 0) {
-      spawnBoss(gameState.gameArea, gameState.activeEnemies);
+      spawnBoss(gameState.gameArea, gameState.activeEnemies, 0);
       enemiesSpawnedThisWave++;
     } 
     if (wave === 4 && !gameState.shieldedEnemySpawned) {

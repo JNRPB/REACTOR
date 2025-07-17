@@ -92,3 +92,6 @@ activeEnemy.appendChild(shieldDiv);
 
   gameState.activeEnemies.push(activeEnemy);
 }
+
+
+

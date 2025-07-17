@@ -1,6 +1,6 @@
 import { createParticles } from "./particles.js";
 import { gameState } from "../state.js";
-import { updateBossHealthBar } from "./boss.js";
+import { updateBossHealthBar } from "./enemyUI.js";
 
 export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
   activeEnemies.forEach((enemy) => {

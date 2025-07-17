@@ -1,49 +1,4 @@
-import { spawnWave } from "./waveLogic.js";
-import { bossList } from "./bossProfiles.js";
-import { createBossParticles } from "./particles.js";
-
-export function spawnBoss(gameArea, activeEnemies, bossIndex = 0) {
-  const bossData = bossList[bossIndex];
-  const boss = document.createElement("div");
-
-  boss.id = "boss";
-  boss.style.position = "absolute";
-  boss.style.width = `${bossData.width}px`;
-  boss.style.height = `${bossData.height}px`;
-  boss.style.position = "absolute"; // spelling fixed from "absoloute"
-  boss.style.backgroundColor = bossData.color;
-  boss.style.border = bossData.border;
-  boss.style.borderRadius = bossData.borderRadius;
-  //position on the game area
-  boss.style.left = `${(gameArea.clientWidth - bossData.width) / 2}px`;
-  boss.style.top = `-${bossData.height}px`;
-
-  gameArea.appendChild(boss);
-
-  boss.dataset.hp = bossData.maxHp;
-  boss.dataset.maxHp = bossData.maxHp;
-  boss.dataset.isBoss = "true";
-  boss.dataset.name = bossData.name;
-
-  activeEnemies.push(boss);
-
-  let targetY = 50; // final Y position for the boss (pixels)
-  let speed = 1; // pixels per frame (adjust for slower/faster)
-
-  // Use setInterval to move boss down every ~16ms (~60fps)
-  let moveInterval = setInterval(() => {
-    let currentY = parseFloat(boss.style.top); // get current vertical position
-    if (currentY < targetY) {
-      if (isNaN(currentY)) currentY = -bossData.height;
-      boss.style.top = currentY + speed + "px"; // move down by speed pixels
-    } else {
-      clearInterval(moveInterval); // stop moving when target reached
-      showBossHealthBar(boss, gameArea); // then show the boss health bar
-    }
-  }, 16);
-}
-
-function showBossHealthBar(boss) {
+export function showBossHealthBar(boss) {
   // Check if the health bar container already exists
   let healthBarContainer = document.getElementById("bossHealthBarContainer");
   if (!healthBarContainer) {
@@ -96,31 +51,6 @@ function showBossHealthBar(boss) {
   }
 }
 
-function createFlash() {
-  const flash = document.createElement("div");
-  flash.style.position = "fixed";
-  flash.style.top = 0;
-  flash.style.left = 0;
-  flash.style.width = "100%";
-  flash.style.height = "100%";
-  flash.style.backgroundColor = "white";
-  flash.style.opacity = "0.8";
-  flash.style.zIndex = "100000"; // very top
-  flash.style.pointerEvents = "none";
-  flash.style.transition = "opacity 0.5s ease-out";
-
-  document.body.appendChild(flash);
-
-  // Fade out and remove after 500ms
-  requestAnimationFrame(() => {
-    flash.style.opacity = "0";
-  });
-
-  setTimeout(() => {
-    flash.remove();
-  }, 500);
-}
-
 export function updateBossHealthBar(boss, activeEnemies) {
   const healthBar = document.getElementById("bossHealthBar");
   const healthText = document.getElementById("bossHealthText");
@@ -160,4 +90,30 @@ export function updateBossHealthBar(boss, activeEnemies) {
       spawnWave(document.getElementById("gameArea"));
     }, 3000);
   }
+}
+
+
+function createFlash() {
+  const flash = document.createElement("div");
+  flash.style.position = "fixed";
+  flash.style.top = 0;
+  flash.style.left = 0;
+  flash.style.width = "100%";
+  flash.style.height = "100%";
+  flash.style.backgroundColor = "white";
+  flash.style.opacity = "0.8";
+  flash.style.zIndex = "100000"; // very top
+  flash.style.pointerEvents = "none";
+  flash.style.transition = "opacity 0.5s ease-out";
+
+  document.body.appendChild(flash);
+
+  // Fade out and remove after 500ms
+  requestAnimationFrame(() => {
+    flash.style.opacity = "0";
+  });
+
+  setTimeout(() => {
+    flash.remove();
+  }, 500);
 }

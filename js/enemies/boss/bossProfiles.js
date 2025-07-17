@@ -1,8 +1,10 @@
+import { sentinelBehavior } from "./bosses/sentinelBehavior.js";
+
 export const bossList = [
   {
-    name: "Overlord X",
+    name: "Sentinel",
     color: "darkred",
-    maxHp: 20,
+    maxHp: 7000,
     primaryMove: "horde",
     drop: "voltaicStorm",
     introMessage: "The Overlord descends!",
@@ -11,8 +13,11 @@ export const bossList = [
     top: -100,
     border: "3px solid black",
     borderRadius: "10px",
-    position: "absolute" // corrected spelling
-    // We'll compute `left` in spawnBoss
+    position: "absolute",
+    abilities: {
+      initBehavior: sentinelBehavior,
+    }
+    
   }
 ];
 
