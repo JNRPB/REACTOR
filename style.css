@@ -1,33 +1,96 @@
-    body {
-background-color: #333333;
-    }
-
-    .enemy-class {
-  transition: left 0.15s ease-out, top 0.15s ease-out;
+/* Reset & Body */
+body {
+  background-color: #333333;
+  margin: 0;
 }
 
-    
-    
-    
-    #gameArea {
+/* Game Wrapper & Layout */
+#gameWrapper {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#statsPanel {
+  font-family: monospace;
+  color: #fff;
+  background: #222;
+  padding: 10px 15px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  min-width: 180px;
+  height: 900px;
+  box-shadow:
+    0 0 10px #00ffff,
+    0 0 10px #00ffff,
+    0 0 50px #00ffff;
+}
+
+/* Game Area */
+#gameArea {
+  position: relative; /* IMPORTANT: scope for absolute children */
   width: 1200px;
   height: 900px;
   background-color: #2b2b2b;
   border: 2px solid #888787;
-  position: relative;
   overflow: hidden;
-  /* margin: 0;  no margin needed */
 }
-    
+
+/* Parallax Background Layers */
+.parallax {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-repeat: repeat;
+  background-size: cover;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+  z-index: -1; /* Behind game content */
+}
+
+.layer-1 {
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  animation: drift1 120s linear infinite;
+  opacity: 0.3;
+}
+
+.layer-2 {
+  background-image: url("https://www.transparenttextures.com/patterns/cloudy.png");
+  animation: drift2 90s linear infinite;
+  opacity: 0.15;
+}
+
+.layer-3 {
+  background-image: url("https://www.transparenttextures.com/patterns/noise.png");
+  animation: drift3 60s linear infinite;
+  opacity: 0.1;
+}
+
+@keyframes drift1 {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-200px, 100px); }
+}
+@keyframes drift2 {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(100px, -200px); }
+}
+@keyframes drift3 {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-300px, 300px); }
+}
+
+/* Welcome Screen */
 #welcomeScreen {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
-  width: 600px;   /* example width */
-  height: 400px;  /* example height */
-
+  width: 600px;
+  height: 400px;
   background-color: rgba(49, 48, 48, 0.85);
   color: white;
   display: flex;
@@ -37,15 +100,15 @@ background-color: #333333;
   z-index: 10;
   text-align: center;
   border: 2px solid #888787;
-
   font-family: 'Orbitron', sans-serif;
 }
+
 #welcomeScreen h1 {
   font-size: 2.5rem;
   font-weight: 700;
   letter-spacing: 2px;
   margin-bottom: 1rem;
-  color: #00ffff; /* cool neon blue */
+  color: #00ffff;
   text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
 }
 
@@ -57,6 +120,7 @@ background-color: #333333;
   line-height: 1.6;
 }
 
+/* Start Button */
 #startGameBtn {
   background: #333333;
   border: solid;
@@ -81,67 +145,18 @@ background-color: #333333;
   box-shadow: 0 3px 10px rgba(0, 13, 255, 0.5);
 }
 
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background-color: white;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 1;
-  animation: particle-fly var(--duration, 0.7s) linear forwards;
-
-
-  box-shadow: 0 0 8px white;;
-}
-
-@keyframes particle-fly {
-  0% {
-    transform: translate(0, 0) scale(10);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--x), var(--y)) scale(0.2);
-    opacity: 0;
-  }
-}
-
-.enemyShield {
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  width: calc(100% + 15px);
-  height: calc(100% + 15px);
-  border: 3px solid rgba(0, 150, 255, 0.7);
-  border-radius: 50%;
-  box-shadow: 0 0 15px 5px rgba(0, 150, 255, 0.5);
-  pointer-events: none; /* so clicks pass through */
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 15px 5px rgba(0, 150, 255, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 25px 10px rgba(0, 150, 255, 0.8);
-  }
-}
-
-
-/************************************************************************* Game Props */
-
+/* Shield Bar */
 #shieldContainer {
   position: absolute;
-  top: 800px;  /* your desired position */
+  top: 800px;
   left: 0;
   width: 100%;
   height: 10px;
-  background-color: #000000; /* light grey background */
+  background-color: #000000;
   border-radius: 5px;
   overflow: hidden;
   z-index: 10;
-    box-shadow:
+  box-shadow:
     0 0 15px #00ffff,
     0 0 30px #00ffff,
     0 0 40px #00ffff;
@@ -149,14 +164,14 @@ background-color: #333333;
 
 #shieldBar {
   height: 100%;
-  width: 100%;  /* start full */
+  width: 100%;
   background-color: #00ffff;
   box-shadow:
     0 0 10px #00ffff,
     0 0 20px #00ffff,
     0 0 30px #00ffff;
   border-radius: 5px 0 0 5px;
-  transition: width 0.3s ease;  /* smooth shrinking */
+  transition: width 0.3s ease;
   animation: pulseGlow 2s infinite;
 }
 
@@ -175,9 +190,10 @@ background-color: #333333;
   }
 }
 
+/* Wave Counter */
 #waveCounter {
   position: absolute;
-  top: 820px; /* 10px below shield (shield top 800 + 10 height + 10 spacing) */
+  top: 820px;
   left: 0;
   width: 100%;
   text-align: center;
@@ -192,89 +208,139 @@ background-color: #333333;
   z-index: 10;
 }
 
-
-
-
-
-#gameWrapper {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  justify-content: center; /* optional */
-}
-
-#statsPanel {
-  font-family: monospace;
-  color: #fff;
-  background: #222;
-  padding: 10px 15px;
-  border: 1px solid #555;
-  border-radius: 8px;
-  min-width: 180px;
-  /*box-shadow: 0 0 10px #000; */
-  /* You can add height if you want it exactly match game area height */
-  height: 900px; 
-      box-shadow:
-    0 0 10px #00ffff,
-    0 0 10px #00ffff,
-    0 0 50px #00ffff;
-}
-
-
-
-
-
-
-
-
-/************************************************************************* Loot Styles */
-
-/* Loot visuals */
-.loot {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  font-size: 20px;
-  text-align: center;
-  cursor: pointer;
-  z-index: 999;
-  animation: bob 1s infinite ease-in-out;
-}
-
-.rocket-loot {
-  color: orange;
-  text-shadow: 0 0 4px yellow;
-}
-
-/* Float bobbing */
-@keyframes bob {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-
-/* Floating text feedback */
-.floating-text {
-  position: absolute;
-  color: white;
-  font-size: 14px;
-  animation: floatText 1s ease-out forwards;
-  pointer-events: none;
-  z-index: 999;
-}
-
-@keyframes floatText {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-20px); }
-}
-
-
+/* FX Canvas */
 #fxCanvas {
   position: absolute;
   top: 0;
   left: 0;
   pointer-events: none;
   z-index: 10;
-
 }
 
+/* Enemy Movement Transition */
+.enemy-class {
+  transition: left 0.15s ease-out, top 0.15s ease-out;
+}
+
+/* Particle Effects */
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 1;
+  animation: particle-fly var(--duration, 0.7s) linear forwards;
+  box-shadow: 0 0 8px white;
+}
+
+@keyframes particle-fly {
+  0% {
+    transform: translate(0, 0) scale(10);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* Enemy Shield Visual */
+.enemyShield {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 15px);
+  height: calc(100% + 15px);
+  border: 3px solid rgba(0, 150, 255, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(0, 150, 255, 0.5);
+  pointer-events: none;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px 5px rgba(0, 150, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 25px 10px rgba(0, 150, 255, 0.8);
+  }
+}
+
+.pickup {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 10;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  animation: float 1s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-6px);
+  }
+}
+
+/* Mini Shield Restore - small blue orb */
+.pickup-mini_shield_restore {
+  background: radial-gradient(circle, #4fc3f7, #0288d1);
+  border: 1px solid #81d4fa;
+}
+
+/* 25% Shield Restore - larger, brighter blue orb */
+.pickup-shield_restore_25 {
+  background: radial-gradient(circle, #29b6f6, #0277bd);
+  border: 1px solid #4fc3f7;
+}
+
+/* 100% Shield Restore - glowing orb */
+.pickup-shield_restore_100 {
+  background: radial-gradient(circle, #00e5ff, #01579b);
+  border: 2px solid #00bcd4;
+  box-shadow: 0 0 12px #00e5ff;
+}
+
+/* Surge Passifier - purple sparkly item */
+.pickup-surge_passifier {
+  background: radial-gradient(circle, #ce93d8, #6a1b9a);
+  border: 2px solid #ba68c8;
+  box-shadow: 0 0 10px #e040fb;
+}
+
+#abilitiesPanel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  background: rgba(20, 20, 20, 0.9);
+  display: grid;
+  grid-template-columns: repeat(2, 90px);
+  grid-template-rows: repeat(8, 90px);
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.abilitySlot {
+  width: 90px;
+  height: 90px;
+  background: #333;
+  border: 2px solid #666;
+  color: white;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  user-select: none;
+}

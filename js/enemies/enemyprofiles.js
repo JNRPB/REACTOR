@@ -6,6 +6,7 @@ export const enemyA = {
   border: "1px solid #6bd675  ",
   weight: 5,
   hp: 10 * 2,
+  lootTableID: 1,
 };
 
 export const enemyB = {
@@ -16,6 +17,7 @@ export const enemyB = {
   border: "1px solid #6bd6b4 ",
   weight: 3,
   hp: 13 * 2,
+  lootTableID: 1,
 };
 
 export const enemyC = {
@@ -26,6 +28,7 @@ export const enemyC = {
   border: "1px solid #604ec7 ",
   weight: 1,
   hp: 25 * 2,
+  lootTableID: 1,
 };
 
 export const enemyD = {
@@ -37,4 +40,5 @@ export const enemyD = {
   weight: 0.25,
   hp: 80 * 2,
   isShielded: true,
+  lootTableID: 2,
 }

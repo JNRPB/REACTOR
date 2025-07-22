@@ -1,6 +1,8 @@
 import { createParticles } from "./particles.js";
-import { gameState } from "../state.js";
+import { gameState, gameStats } from "../state.js";
 import { updateBossHealthBar } from "./enemyUI.js";
+import { updateStatsPanel } from "../utilities.js";
+import { handleLootDrop, renderDrop } from "../loot/dropHandler.js";
 
 export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
   activeEnemies.forEach((enemy) => {
@@ -37,8 +39,18 @@ export function damageNearbyEnemies(x, y, radius, damageAmount, activeEnemies) {
 export function damageEnemy(enemy, amount, activeEnemies) {
   if (!enemy) return;
 
+  // Handle object-based enemies, so canvas. ready for implimenting canvas ebemies if needed
+  if (enemy.isObjectBased) {
+    enemy.health -= amount;
+    if (enemy.health <= 0) {
+      const index = activeEnemies.indexOf(enemy);
+      if (index > -1) activeEnemies.splice(index, 1);
+    }
+    return;
+  }
+
   if (enemy.isShielded) {
-    const hitSound = document.getElementById("enemyHitSound");
+    const hitSound = document.getElementById("enemyHitSound"); //TODO: change to shield specific hit sound
     if (hitSound) {
       const clone = hitSound.cloneNode();
       clone.volume = 0.4 + Math.random() * 0.6;
@@ -46,16 +58,6 @@ export function damageEnemy(enemy, amount, activeEnemies) {
       clone.play();
     }
     showImmuneText(enemy);
-    return;
-  }
-
-  // Handle object-based enemies
-  if (enemy.isObjectBased) {
-    enemy.health -= amount;
-    if (enemy.health <= 0) {
-      const index = activeEnemies.indexOf(enemy);
-      if (index > -1) activeEnemies.splice(index, 1);
-    }
     return;
   }
 
@@ -83,6 +85,7 @@ export function damageEnemy(enemy, amount, activeEnemies) {
   const gameAreaRect = gameState.gameArea.getBoundingClientRect();
   const x = rect.left - gameAreaRect.left + enemy.offsetWidth / 2;
   const y = rect.top - gameAreaRect.top + enemy.offsetHeight / 2;
+  const drops = handleLootDrop(enemy);
 
   if (currentHp <= 0) {
     enemy.dataset.dead = "true";
@@ -95,6 +98,10 @@ export function damageEnemy(enemy, amount, activeEnemies) {
       clone.play();
     }
 
+    for (const itemId of drops) {
+      renderDrop(itemId, {x, y});
+    }
+
     const size = parseInt(enemy.style.width || "20", 10);
     createParticles(x, y, Math.floor(size * 2), size * 30 + 5, color);
 
@@ -102,7 +109,8 @@ export function damageEnemy(enemy, amount, activeEnemies) {
       gameState.gameArea.removeChild(enemy);
     }
 
-    gameState.enemiesKilled++;
+    gameStats.enemiesKilled++;
+    updateStatsPanel();
     const index = gameState.activeEnemies.indexOf(enemy);
     if (index > -1) gameState.activeEnemies.splice(index, 1);
   } else {

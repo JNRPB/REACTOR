@@ -4,7 +4,7 @@ export const bossList = [
   {
     name: "Sentinel",
     color: "darkred",
-    maxHp: 7000,
+    maxHp: 3000,
     primaryMove: "horde",
     drop: "voltaicStorm",
     introMessage: "The Overlord descends!",
@@ -16,6 +16,7 @@ export const bossList = [
     position: "absolute",
     abilities: {
       initBehavior: sentinelBehavior,
+      lootTableID: 99,
     }
     
   }

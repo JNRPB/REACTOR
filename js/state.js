@@ -2,20 +2,21 @@
 
 export const gameState = {
     gameArea: null,
-    currentAbility: "fists",
     rocketCount: 5,
-    bouncyBallFull: true,
     enemiesSpawned: 0,
-    enemiesKilled: 0,
     shieldHealth: 50,
+    maxShieldHealth: 300,
     reactorHealth: 300,
     isFiring: false,
     mouseState: { x: 0, y: 0, isDown: false },
     /** @type {any[]} */
     activeEnemies: [],
-    /** @type {any[]} */
-    activeSnipers: [],
-    shieldedEnemySpawned: false
+    shieldedEnemySpawned: false,
+    abilities: {
+      unlocked: [],
+      current: "fists"
+    },
+    
 }
 
 export const gameStats = {

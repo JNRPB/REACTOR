@@ -1,3 +1,7 @@
+import { createBossParticles } from "./particles.js";
+import { renderDrop, handleLootDrop } from "../loot/dropHandler.js";
+
+
 export function showBossHealthBar(boss) {
   // Check if the health bar container already exists
   let healthBarContainer = document.getElementById("bossHealthBarContainer");
@@ -23,8 +27,8 @@ export function showBossHealthBar(boss) {
     healthBarContainer.style.color = "white";
     healthBarContainer.style.fontWeight = "bold";
 
-    // Append container to body (fixed position)
-    document.body.appendChild(healthBarContainer);
+    const gameArea = document.getElementById("gameArea");
+    gameArea.appendChild(healthBarContainer);
 
     // Create inner health bar that fills based on HP
     let healthBar = document.createElement("div");
@@ -63,6 +67,8 @@ export function updateBossHealthBar(boss, activeEnemies) {
   healthBar.style.width = percent + "%";
   healthText.textContent = `${hp} / ${maxHp}`;
 
+  const drops = handleLootDrop(boss);
+
   if (hp <= 0) {
     const container = document.getElementById("bossHealthBarContainer");
     if (container) container.remove();
@@ -79,6 +85,10 @@ export function updateBossHealthBar(boss, activeEnemies) {
     // Create BIG particle explosion — way more particles and longer duration
     createBossParticles(centerX, centerY, 400, 3000, boss.style.backgroundColor || "darkred");
 
+        for (const itemId of drops) {
+          renderDrop(itemId, {x, y});
+        }
+
     // Remove boss after explosion duration
     setTimeout(() => {
       boss.remove();
@@ -87,7 +97,8 @@ export function updateBossHealthBar(boss, activeEnemies) {
         activeEnemies.splice(index, 1);
       }
       
-      spawnWave(document.getElementById("gameArea"));
+      // spawnWave(document.getElementById("gameArea")); dont need to call spawnWave?
+      
     }, 3000);
   }
 }

@@ -5,6 +5,7 @@ import { setupMouseTracking } from "./input.js";
 import { handlePrimaryWeaponClick } from "./weapons.js";
 import { gameState } from "./state.js";
 import { level1Enemies } from "./enemies/enemyLevelGroups.js";
+import { renderAbilitiesPanel } from "./abilities/ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   gameState.gameArea = document.getElementById("gameArea");
@@ -30,6 +31,9 @@ export function initGame() {
     gameState.enemiesKilled = 0;
 
     initFxCanvas(gameArea);
+
+    renderAbilitiesPanel();
+
 
     ambientMusic.play().catch(() => {
       console.log("User interaction needed to play audio");

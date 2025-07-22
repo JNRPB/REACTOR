@@ -54,11 +54,7 @@ export function enemyHitsShield(enemy, gameArea, activeEnemies) {
   const index = activeEnemies.indexOf(enemy);
   if (index > -1) activeEnemies.splice(index, 1);
 
-  // Update shield bar width
-  const shieldBar = document.getElementById("shieldBar");
-  const maxShieldHealth = 300; // adjust if needed
-  const healthPercent = (gameState.shieldHealth / maxShieldHealth) * 100;
-  shieldBar.style.width = healthPercent + "%";
+  updateShieldHealthBar();
 
   screenShake();
 
@@ -68,3 +64,11 @@ export function enemyHitsShield(enemy, gameArea, activeEnemies) {
     gameState.shieldDown = true;
   }
 }
+
+  export function updateShieldHealthBar(){
+  const shieldBar = document.getElementById("shieldBar");
+  const maxShieldHealth = 300; // adjust if needed
+  const healthPercent = (gameState.shieldHealth / maxShieldHealth) * 100;
+  shieldBar.style.width = healthPercent + "%";
+
+  }

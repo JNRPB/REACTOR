@@ -40,12 +40,7 @@ export function spawnBoss(gameArea, activeEnemies, bossIndex = 0) {
     } else {
       clearInterval(moveInterval); // stop moving when target reached
       showBossHealthBar(boss, gameArea); // then show the boss health bar
-sentinelBehavior(boss, bossData);
+      sentinelBehavior(boss, bossData);
     }
   }, 16);
 }
-
-
-
-
-

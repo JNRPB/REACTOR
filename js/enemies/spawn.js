@@ -35,6 +35,7 @@ export function spawnEnemy(gameArea, level1Enemies) {
   activeEnemy.dataset.hp = r.hp;
   activeEnemy.dataset.name = r.name;
   activeEnemy.dataset.weight = r.weight;
+  
 
   const areaWidth = gameArea.clientWidth;
   const maxLeft = areaWidth - r.size;
@@ -46,6 +47,7 @@ export function spawnEnemy(gameArea, level1Enemies) {
   activeEnemy.knockbackVY = 0;
   activeEnemy.style.left = randomX + "px";
   activeEnemy.style.top = activeEnemy.y + "px";
+  activeEnemy.lootTableID = r.lootTableID;
 
   gameArea.appendChild(activeEnemy);
 

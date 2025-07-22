@@ -1,43 +1,32 @@
 <?php
 // You can handle sessions, variables, or backend logic here if needed
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>My Game</title>
   <link rel="stylesheet" href="style.css" />
-
-  <style>
-    /* Basic style for your game area */
-
-  </style>
-</head>
-<body>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
 
 
+
+  <!-- 🎵 Audio -->
   <audio id="rocketExplosion" src="audio/impacts/rocketImpact.mp3" preload="auto"></audio>
   <audio id="ambientMusic" src="audio/Music/mesmerizingGalaxyLoop.mp3" preload="auto" loop></audio>
   <audio id="enemyDeathSound" src="audio/impacts/enemyADie.mp3" preload="auto"></audio>
   <audio id="enemyHitSound" src="audio/impacts/hitA.mp3" preload="auto"></audio>
   <audio id="shieldHitA" src="audio/impacts/shieldHitA.mp3" preload="auto"></audio>
 
-
-
-
-
+  <!-- 🕹️ Game Title -->
   <h1 style="text-align: center;">REACTOR</h1>
 
-
-
-
-
-
- 
-  <div id= "gameWrapper">
-        <div id="statsPanel">
+  <!-- 🎮 Game UI -->
+  <div id="gameWrapper">
+    <div id="statsPanel">
       <h3>Stats</h3>
       <p>Wave: <span id="stat-wave">0</span></p>
       <p>Spawned: <span id="stat-spawned">0</span></p>
@@ -46,49 +35,46 @@
       <p>Reactor Hits: <span id="stat-reactorHits">0</span></p>
       <p>Total Damage: <span id="stat-damageDealt">0</span></p>
     </div>
+
     <div id="gameArea">
+
+      <!-- 🌌 Parallax Background Layers -->
+      <div class="parallax layer-1"></div>
+      <div class="parallax layer-2"></div>
+      <div class="parallax layer-3"></div>
+      
       <div id="welcomeScreen">
         <h1> Welcome to REACTOR </h1>
-        <p> The invaders have found us! they are attacking from above, fire your weapon <strong>(left click)</strong>
+        <p>The invaders have found us! They are attacking from above. Fire your weapon <strong>(left click)</strong>
           to defeat them!</p>
-
-          <button id="startGameBtn">Start Game</button>
+        <button id="startGameBtn">Start Game</button>
       </div>
-      
+
       <div id="shieldContainer">
         <div id="shieldBar"></div>
       </div>
+
       <div id="waveCounter">Wave: 1</div>
       <div id="waveTimer" style="display: none; font-size: 24px; color: white; text-align: center; margin-top: 10px;"></div>
 
-
       <canvas id="fxCanvas"></canvas>
-    
-  
- 
+    </div>
+
+    <div id="abilitiesPanel"></div>
+
   </div>
-  
 
-
-</div>
-
+  <!-- 🔧 Game Init -->
   <script>
-    // Your JavaScript game logic goes here
     console.log('Game is ready!');
   </script>
 
+  <script type="module">
+    import { initGame } from './js/game.js';
 
-
-    <script type="module">
-  import { initGame } from './js/game.js';
-
-  // When the page loads, initialize the start button etc.
-  window.addEventListener("DOMContentLoaded", () => {
-    initGame();
-  });
-</script>
-
-
+    window.addEventListener("DOMContentLoaded", () => {
+      initGame();
+    });
+  </script>
 </body>
-
 </html>
