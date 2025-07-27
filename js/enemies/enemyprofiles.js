@@ -42,3 +42,15 @@ export const enemyD = {
   isShielded: true,
   lootTableID: 2,
 }
+
+export const enemyE = {
+      name: "enemyD",
+  color: "#fac105ff ",
+  size: 28.00000000003,
+  speed: 1.3,
+  border: "2px solid #0004ffff ",
+  weight: 2,
+  hp: 80 * 2,
+  isShielded: false,
+  lootTableID: 2,
+}

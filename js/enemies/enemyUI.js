@@ -11,7 +11,7 @@ export function showBossHealthBar(boss) {
     healthBarContainer.id = "bossHealthBarContainer";
 
     // Style container to be fixed full width at top
-    healthBarContainer.style.position = "fixed";
+    healthBarContainer.style.position = "absolute";
     healthBarContainer.style.top = "0";
     healthBarContainer.style.left = "0";
     healthBarContainer.style.width = "100%";
@@ -86,7 +86,7 @@ export function updateBossHealthBar(boss, activeEnemies) {
     createBossParticles(centerX, centerY, 400, 3000, boss.style.backgroundColor || "darkred");
 
         for (const itemId of drops) {
-          renderDrop(itemId, {x, y});
+          renderDrop(itemId, {x: centerX, y: centerY});
         }
 
     // Remove boss after explosion duration

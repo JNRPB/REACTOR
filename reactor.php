@@ -38,16 +38,23 @@
 
     <div id="gameArea">
 
-      <!-- 🌌 Parallax Background Layers -->
-      <div class="parallax layer-1"></div>
-      <div class="parallax layer-2"></div>
-      <div class="parallax layer-3"></div>
+
       
       <div id="welcomeScreen">
         <h1> Welcome to REACTOR </h1>
         <p>The invaders have found us! They are attacking from above. Fire your weapon <strong>(left click)</strong>
           to defeat them!</p>
         <button id="startGameBtn">Start Game</button>
+      </div>
+
+      <div id="gameOverScreen">
+        <h1> Game Over!</h1>
+        <p>The reactor has been <strong>Destroyed</strong>
+          !!</p>
+
+        <p id= "waveStatPara"> You Survived x waves </p>
+        <p id= "killCountPara"> You killed x enemies </p>
+        <button id="restartBtn">Restart</button>
       </div>
 
       <div id="shieldContainer">
@@ -60,7 +67,7 @@
       <canvas id="fxCanvas"></canvas>
     </div>
 
-    <div id="abilitiesPanel"></div>
+   <!-- <div id="abilitiesPanel"></div> -->
 
   </div>
 

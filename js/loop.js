@@ -1,5 +1,7 @@
 import { moveEnemies } from "./enemies/movement.js";
 import { gameState } from "./state.js";
+import { drawParticles, drawShieldPickupParticles } from "../fx/particles.js";
+import { drawBackground } from "../fx/setup.js";
 
 let lastFrameTime = 0;
 
@@ -31,7 +33,9 @@ export function gameLoop(timestamp = 0) {
     }
   );
 
-  // Optional: drawParticles(deltaTime);
+  drawParticles(deltaTime);
+  drawShieldPickupParticles();
+  //drawBackground();
 
   // Request next animation frame to continue game loop
   requestAnimationFrame(gameLoop);

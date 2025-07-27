@@ -1,12 +1,13 @@
+import { enemyA, enemyB, enemyC, enemyE } from "./enemies/enemyprofiles.js";
 
 
 export const gameState = {
     gameArea: null,
     rocketCount: 5,
     enemiesSpawned: 0,
-    shieldHealth: 50,
-    maxShieldHealth: 300,
-    reactorHealth: 300,
+    shieldHealth: 100,
+    maxShieldHealth: 100,
+    reactorHealth: 1,
     isFiring: false,
     mouseState: { x: 0, y: 0, isDown: false },
     /** @type {any[]} */
@@ -16,6 +17,7 @@ export const gameState = {
       unlocked: [],
       current: "fists"
     },
+    enemyPool: [enemyA, enemyB, enemyC],
     
 }
 

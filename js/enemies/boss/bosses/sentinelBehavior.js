@@ -9,19 +9,15 @@ export function sentinelBehavior(bossElement, bossData) {
       return;
     }
 
-    if (
-      parseFloat(bossElement.dataset.hp) < bossData.maxHp * 0.75 &&
-      phase === 1
-    ) {
+    const currentHp = parseFloat(bossElement.dataset.hp);
+
+    if (currentHp < bossData.maxHp * 0.75 && phase === 1) {
       phase = 2;
       bossElement.style.backgroundColor = "yellow";
       // more behavior here
     }
 
-    if (
-      parseFloat(bossElement.dataset.hp) < bossData.maxHp * 0.25 &&
-      phase === 2
-    ) {
+    if (currentHp < bossData.maxHp * 0.25 && phase === 2) {
       phase = 3;
       bossElement.style.backgroundColor = "white";
       // more behavior here
@@ -31,27 +27,34 @@ export function sentinelBehavior(bossElement, bossData) {
     if (roll < 0.4) {
       miniHorde(bossElement);
     } else {
-      //shieldUp(bossElement); //TODO: make shield
+      //shieldUp(bossElement); // TODO: implement shield
       bossElement.style.transition = "transform 1s linear";
       bossElement.style.transform = "rotate(360deg)";
 
-      // Reset after rotation (optional)
+      // Reset after rotation
       setTimeout(() => {
         bossElement.style.transform = "rotate(0deg)";
       }, 1000);
     }
-  }, 3000); // boss makes a decition every 3 seconds
+  }, 3000); // boss acts every 3 seconds
 }
 
 export function miniHorde(bossElement) {
-  const hordeSize = 15; // or randomize: Math.floor(Math.random() * 3) + 3;
+  const hordeSize = 15;
 
   const bossX = bossElement.offsetLeft + bossElement.offsetWidth / 2;
   const bossY = bossElement.offsetTop + bossElement.offsetHeight / 2;
 
+  console.log("miniHorde spawn center:", bossX, bossY);
+
+  if (isNaN(bossX) || isNaN(bossY)) {
+    console.warn("⚠️ Invalid boss position for miniHorde spawn:", bossX, bossY);
+    return; // bail out if invalid
+  }
+
   for (let i = 0; i < hordeSize; i++) {
     const angle = (i / hordeSize) * Math.PI * 2;
-    const radius = 80; // how far from the boss the enemies appear
+    const radius = 80;
 
     const spawnX = bossX + Math.cos(angle) * radius;
     const spawnY = bossY + Math.sin(angle) * radius;
@@ -61,6 +64,11 @@ export function miniHorde(bossElement) {
 }
 
 export function spawnHorde(x, y) {
+  if (isNaN(x) || isNaN(y)) {
+    console.warn("⚠️ spawnHorde called with invalid coordinates:", x, y);
+    return; // bail out early to avoid invalid CSS assignment
+  }
+
   const miniEnemy = document.createElement("div");
   miniEnemy.classList.add("enemy", "mini-horde");
 
@@ -68,10 +76,11 @@ export function spawnHorde(x, y) {
   miniEnemy.style.height = "20px";
   miniEnemy.style.backgroundColor = "orange";
   miniEnemy.style.position = "absolute";
+
   miniEnemy.style.left = `${x}px`;
   miniEnemy.style.top = `${y}px`;
 
-  miniEnemy.x = x; // ✅ needed for movement
+  miniEnemy.x = x;
   miniEnemy.y = y;
   miniEnemy.knockbackVX = 0;
   miniEnemy.knockbackVY = 0;
@@ -84,4 +93,3 @@ export function spawnHorde(x, y) {
   gameArea.appendChild(miniEnemy);
   gameState.activeEnemies.push(miniEnemy);
 }
-

@@ -1,3 +1,4 @@
+import { spawnShieldPickupParticles } from "../../fx/particles.js";
 import { updateShieldHealthBar } from "../defence/defence.js";
 import { gameState } from "../state.js";
 import { lootTables } from "./lootTables.js";
@@ -48,24 +49,27 @@ export function renderDrop(itemId, position) {
 
   // Collision/pickup logic
   drop.addEventListener("mouseenter", () => {
-    handlePickup(itemId);
+    handlePickup(itemId, position);
     drop.remove();
   });
 }
 
-function handlePickup(itemId) {
+function handlePickup(itemId, position) {
   switch (itemId) {
     case "mini_shield_restore":
       gameState.shieldHealth = Math.min(gameState.maxShieldHealth, gameState.shieldHealth + 5);
       updateShieldHealthBar();
+      spawnShieldPickupParticles(position.x, position.y);
       break;
     case "shield_restore_25":
       gameState.shieldHealth = Math.min(gameState.maxShieldHealth, gameState.shieldHealth + (gameState.maxShieldHealth * 0.25));
       updateShieldHealthBar();
+      spawnShieldPickupParticles(position.x, position.y);
       break;
     case "shield_restore_100":
       gameState.shieldHealth = gameState.maxShieldHealth;
       updateShieldHealthBar();
+      spawnShieldPickupParticles(position.x, position.y);
       break;
     case "surge_passifier":
         if(!gameState.abilities.unlocked.includes("surge_passifier")){

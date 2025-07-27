@@ -35,6 +35,7 @@ export function spawnEnemy(gameArea, level1Enemies) {
   activeEnemy.dataset.hp = r.hp;
   activeEnemy.dataset.name = r.name;
   activeEnemy.dataset.weight = r.weight;
+  activeEnemy.dataset.size = r.size;
   
 
   const areaWidth = gameArea.clientWidth;

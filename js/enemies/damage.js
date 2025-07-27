@@ -1,4 +1,4 @@
-import { createParticles } from "./particles.js";
+import { createParticles } from "../../fx/particles.js";
 import { gameState, gameStats } from "../state.js";
 import { updateBossHealthBar } from "./enemyUI.js";
 import { updateStatsPanel } from "../utilities.js";
@@ -103,7 +103,7 @@ export function damageEnemy(enemy, amount, activeEnemies) {
     }
 
     const size = parseInt(enemy.style.width || "20", 10);
-    createParticles(x, y, Math.floor(size * 2), size * 30 + 5, color);
+    createParticles(x, y);
 
     if (gameState.gameArea.contains(enemy)) {
       gameState.gameArea.removeChild(enemy);

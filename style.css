@@ -37,51 +37,6 @@ body {
   overflow: hidden;
 }
 
-/* Parallax Background Layers */
-.parallax {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background-repeat: repeat;
-  background-size: cover;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  pointer-events: none;
-  z-index: -1; /* Behind game content */
-}
-
-.layer-1 {
-  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
-  animation: drift1 120s linear infinite;
-  opacity: 0.3;
-}
-
-.layer-2 {
-  background-image: url("https://www.transparenttextures.com/patterns/cloudy.png");
-  animation: drift2 90s linear infinite;
-  opacity: 0.15;
-}
-
-.layer-3 {
-  background-image: url("https://www.transparenttextures.com/patterns/noise.png");
-  animation: drift3 60s linear infinite;
-  opacity: 0.1;
-}
-
-@keyframes drift1 {
-  from { transform: translate(0, 0); }
-  to   { transform: translate(-200px, 100px); }
-}
-@keyframes drift2 {
-  from { transform: translate(0, 0); }
-  to   { transform: translate(100px, -200px); }
-}
-@keyframes drift3 {
-  from { transform: translate(0, 0); }
-  to   { transform: translate(-300px, 300px); }
-}
 
 /* Welcome Screen */
 #welcomeScreen {
@@ -118,6 +73,66 @@ body {
   color: #ddd;
   margin-bottom: 2rem;
   line-height: 1.6;
+}
+
+#gameOverScreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 400px;
+  background-color: rgba(49, 48, 48, 0.85);
+  color: white;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  text-align: center;
+  border: 2px solid #888787;
+  font-family: 'Orbitron', sans-serif;
+}
+
+#gameOverScreen h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+#gameOverScreen p {
+  font-size: 1.2rem;
+  max-width: 80%;
+  color: #ddd;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+#restartBtn {
+  background: #333333;
+  border: solid;
+  border-color: brown;
+  border-radius: 5px;
+  color: rgb(202, 69, 69);
+  font-size: 1.5rem;
+  padding: 15px 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#restartBtn:hover {
+  background: #303030;
+  border-color: rgb(247, 202, 202);
+  transform: scale(1.01);
+}
+
+#restartBtn:active {
+  transform: scale(0.95);
+  box-shadow: 0 3px 10px rgba(0, 13, 255, 0.5);
 }
 
 /* Start Button */
@@ -214,7 +229,7 @@ body {
   top: 0;
   left: 0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 0;
 }
 
 /* Enemy Movement Transition */
@@ -245,6 +260,14 @@ body {
     opacity: 0;
   }
 }
+
+/* For enemies or game objects, set z-index > 0 */
+.enemy-class {
+  position: absolute;
+  z-index: 2; /* ensure above canvas */
+  transition: left 0.15s ease-out, top 0.15s ease-out;
+}
+
 
 /* Enemy Shield Visual */
 .enemyShield {

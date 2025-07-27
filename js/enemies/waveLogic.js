@@ -4,7 +4,7 @@ import { gameState, gameStats} from "../state.js";
 import { level1Enemies, shieldEnemy } from "./enemyLevelGroups.js";
 import { updateStatsPanel } from "../utilities.js";
 
-let wave = 4;
+let wave = 0;
 let enemiesSpawnedThisWave = 0;
 let maxWaves = 100;
 let waveInProgress = false;
@@ -37,6 +37,7 @@ export function spawnWave(gameArea) {
   const waveInterval = setInterval(() => {
     if (wave % 5 === 0 && enemiesSpawnedThisWave === 0) {
       spawnBoss(gameState.gameArea, gameState.activeEnemies, 0);
+      //spawnWave(gameArea);
       enemiesSpawnedThisWave++;
     } 
     if (wave === 4 && !gameState.shieldedEnemySpawned) {
@@ -46,7 +47,7 @@ export function spawnWave(gameArea) {
       enemiesSpawnedThisWave++;
     }
     else if (enemiesSpawnedThisWave < enemiesInWave) {
-      spawnEnemy(gameState.gameArea, level1Enemies);
+      spawnEnemy(gameState.gameArea, gameState.enemyPool);
       enemiesSpawnedThisWave++;
     }
 

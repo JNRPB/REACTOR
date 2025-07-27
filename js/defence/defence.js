@@ -1,13 +1,14 @@
 import { screenShake } from "../fx.js";
 import { gameState, gameStats } from "../state.js";
 import { updateStatsPanel } from "../utilities.js";
+import { gameOver } from "../game.js";
 
 export let reactorHealth = 300;
-export let shieldHealth = 5;
+export let shieldHealth = 100;
 export let shieldDown = false;
 export let lastReactorDamageTime = 0;
 
-const shieldElement = document.getElementById("shield");
+const shieldElement = document.getElementById("shieldContainer");
 
 export function enemyHitsReactor(enemy, gameArea, activeEnemies) {
   const weight = parseInt(enemy.dataset.weight, 10) || 1;
@@ -16,6 +17,8 @@ export function enemyHitsReactor(enemy, gameArea, activeEnemies) {
   reactorHealth -= damage;
   gameStats.enemiesHitReactor++;
   updateStatsPanel();
+  console.log(gameState.reactorHealth);
+  gameOver();
 
   gameArea.removeChild(enemy);
   const index = activeEnemies.indexOf(enemy);
@@ -28,20 +31,20 @@ export function enemyHitsReactor(enemy, gameArea, activeEnemies) {
 
   if (reactorHealth <= 0) {
     reactorHealth = 0;
-    window.gameOver = true;
+    gameOver();
   }
 }
 
 export function enemyHitsShield(enemy, gameArea, activeEnemies) {
   if (enemy.dataset.dead === "true") return;
 
-  const weight = parseInt(enemy.dataset.weight, 10) || 1;
-  const damage = Math.round(10 / weight);
+  const weight = parseInt(enemy.dataset.size, 10) || 1;
+  const damage = Math.round(weight);
 
-  if(enemy.isShielded){
-    gameState.shieldHealth -= gameState.shieldHealth /2;
+  if (enemy.isShielded) {
+    gameState.shieldHealth -= gameState.shieldHealth / 2;
   } else {
-  gameState.shieldHealth -= damage;
+    gameState.shieldHealth -= damage;
   }
 
   if (gameState.shieldHealth < 0) gameState.shieldHealth = 0;
@@ -57,18 +60,18 @@ export function enemyHitsShield(enemy, gameArea, activeEnemies) {
   updateShieldHealthBar();
 
   screenShake();
-
-  // Check if shield is down
-  if (gameState.shieldHealth <= 0) {
-    gameState.shieldHealth = 0;
-    gameState.shieldDown = true;
-  }
 }
 
-  export function updateShieldHealthBar(){
+export function updateShieldHealthBar() {
   const shieldBar = document.getElementById("shieldBar");
-  const maxShieldHealth = 300; // adjust if needed
+  const maxShieldHealth = 100; // adjust if needed
   const healthPercent = (gameState.shieldHealth / maxShieldHealth) * 100;
   shieldBar.style.width = healthPercent + "%";
 
+  if (gameState.shieldHealth <= 0) {
+    gameState.shieldHealth = 0;
+    gameState.shieldDown = true;
+  } else {
+    gameState.shieldDown = false;
   }
+}
